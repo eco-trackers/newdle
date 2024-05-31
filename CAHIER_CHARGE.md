@@ -6,4 +6,4 @@ L'objectif de ce projet est de réaliser une application de gestion de notes et 
 
 ## Fonctionnalités
 
-...
+
