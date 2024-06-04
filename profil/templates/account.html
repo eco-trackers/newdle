@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newdle account</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+</head>
+<body id="body-login">
+    <header>
+        <div class="menu-header">
+            <div class="logo">
+                <a href="{% url 'login:index' %}">
+                    <img src="{% static '' %}" alt="App logo">
+                </a> 
+            </div>
+            <div class="boutons-container">
+                 <a href="{% url 'login:log_in' %}" class="button">Login</a> {#todo modifier les redirections selon header#}
+            </div>
+        </div>
+    </header>
+        <div class="account">
+            <h1>Profil de {{ profil.user.username }}</h1>
+                <p>Type : {{ profil.type }}</p>
+                <p>Groupes :</p>
+                <ul>
+                    {% for group in profil.group.all %}
+                        <li>{{ group.name }}</li>
+                    {% endfor %}
+                </ul>
+        </div>
+        
+      
+   
+    <footer>
+        <p>&copy; 2024 Newdle. All rights deserved.</p>
+    </footer>
+
+</body>
+</html>
