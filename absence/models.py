@@ -1,5 +1,7 @@
 from django.db import models
 from datetime import datetime
+from profil.models import Profil
+from subject.models import Subject
 # Create your models here.
 class Absence :
     status = models.CharField(max_length=1)
