@@ -6,7 +6,7 @@ class Profil(models.Model):
     User = get_user_model()
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     type = models.CharField(max_length=1)
-    group = models.ManyToManyField(Group,on_delete=models.CASCADE)
+    group = models.ManyToManyField(to=Group)
 
     def __str__(self):
         return self.user
