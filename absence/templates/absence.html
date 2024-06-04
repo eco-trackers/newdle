@@ -37,6 +37,7 @@
                 <tr>
                     <th>Date</th>
                     <th>Statut</th>
+                    <th>Matière</th>
                 </tr>
             </thead>
             <tbody>
@@ -44,6 +45,7 @@
                     <tr>
                         <td>{{ absence.date|date:"Y-m-d" }} {{ absence.date|time:"H:i:s" }}</td>
                         <td>{{ absence.get_status_display }}</td>
+                        <td>{{ absence.subject.name}}
                     </tr>
                 {% endfor %}
             </tbody>

@@ -6,26 +6,32 @@ from subjects.models import Subject
 from .models import Absence
 from .forms import AbsenceForm
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from datetime import datetime
+import pytz
 # Create your views here.
 
-
 class AbsenceView(View):
-    def get(self, request,id='Det'):
-        if 'details' in request.GET:
+    @method_decorator(login_required)
+    def get(self, request,id=None):
+        if id is None or 'details' in request.GET:
             absences = Absence.objects.filter(student=Profil.objects.get(user=request.user))
             return render(request, 'absence.html', {'mode': 'details', 'absences': absences})
         else:
             form = AbsenceForm()
             return render(request, 'absence.html', {'mode': 'input', 'form': form})
-
+    @method_decorator(login_required)
     def post(self, request,id):
         form = AbsenceForm(request.POST)
+        local_tz = pytz.timezone('Europe/Paris')
+        now = datetime.now(local_tz)
         if form.is_valid():
             absence = form.save(commit=False)
             absence.student = Profil.objects.get(user=request.user)
             absence.subject = Subject.objects.get(name=id)
+            absence.date = now
             absence.save()
-            return redirect(reverse('absence:absence') + '?details')  
+            return redirect(f"{reverse('absence:absence', kwargs={'id': id})}?details")  
         return render(request, 'absence.html', {'mode': 'input', 'form': form})
     
 def index_view(request):
