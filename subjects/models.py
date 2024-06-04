@@ -1,7 +1,8 @@
 from django.db import models
 from profil.models import Profil
+from group.models import Group
 
-class UE(models.model):
+class UE(models.Model):
     name = models.CharField(max_length=50)
     semester = models.CharField(max_length=2)
     coef = models.CharField(max_length=3)
@@ -9,11 +10,11 @@ class UE(models.model):
     def __str__(self):
         return self.name + '|' + str(self.semester) + '|'  + str(self.coef)
 
-class Subject(models.model):
+class Subject(models.Model):
     name = models.CharField(max_length=50)
-    ue = models.ManyToManyField(to=UE,on_delete=models.CASCADE)
-    prof = models.ManyToManyField(to=Profil,on_delete=models.CASCADE)
-    student_group = models.ManyToManyField(to=Group,on_delete=models.CASCADE)
+    ue = models.ManyToManyField(to=UE)
+    prof = models.ManyToManyField(to=Profil)
+    student_group = models.ManyToManyField(to=Group)
     coef = models.CharField(max_length=3)
 
 
