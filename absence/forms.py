@@ -7,7 +7,7 @@ class AbsenceForm(forms.ModelForm):
         model = Absence
         fields = ['status']
         widgets = {
-            'status': forms.Select(choices=Absence.STATUS_CHOICES),
+            'status': forms.RadioSelect(choices=Absence.STATUS_CHOICES, attrs={'class': 'form-check'}),
         }
         labels = {
             'status': 'Statut',

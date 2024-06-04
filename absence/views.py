@@ -8,6 +8,7 @@ from .forms import AbsenceForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from datetime import datetime
+from django.core.paginator import Paginator
 import pytz
 # Create your views here.
 
@@ -15,7 +16,10 @@ class AbsenceView(View):
     @method_decorator(login_required)
     def get(self, request,id=None):
         if id is None or 'details' in request.GET:
-            absences = Absence.objects.filter(student=Profil.objects.get(user=request.user))
+            absences = Absence.objects.filter(student=Profil.objects.get(user=request.user)).order_by('-date')
+            paginator = Paginator(absences, 10)
+            page_number = request.GET.get('page')
+            absences = paginator.get_page(page_number)
             return render(request, 'absence.html', {'mode': 'details', 'absences': absences})
         else:
             form = AbsenceForm()
