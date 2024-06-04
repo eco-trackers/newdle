@@ -15,7 +15,6 @@ class Absence(models.Model) :
     date = models.DateTimeField(default=datetime.now, blank=True)
     
     def get_status_display_custom(self):
-        # Récupérer le statut à partir des choix disponibles
         for choice in self.STATUS_CHOICES:
             if choice[0] == self.status:
                 return choice[1]
