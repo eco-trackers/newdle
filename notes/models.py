@@ -1,8 +1,8 @@
 from django.db import models
 from subjects.models import Subject
 from profil.models import Profil
-class Note(models.model):
-    valeur=models.FloatField()
+class Notes(models.model):
+    note=models.FloatField()
     subject=models.ForeignKey(Subject,on_delete=models.CASCADE)
     profil=models.ForeignKey(Profil,on_delete=models.CASCADE)
     def __str__(self):
