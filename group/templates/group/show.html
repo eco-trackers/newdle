@@ -16,9 +16,13 @@
             <h1>Groups</h1>
             {% for group in groups %}
                 <div class="card mb-3 w-50 p-3">
-                    <h2>{{ group.name }}</h2>
-                    <a href="{% url 'group:edit' group.id %}">Edit</a>
-                    <a href="{% url 'group:delete' group.id %}">Delete</a>
+                    <div class="col-md-6">
+                        <h2>{{ group.name }}</h2>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{% url 'group:edit' group.id %}">Edit</a>
+                        <a href="{% url 'group:delete' group.id %}">Delete</a>
+                    </div>
                 </div>
             {% endfor %}
             <br>
