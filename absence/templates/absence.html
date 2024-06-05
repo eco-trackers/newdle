@@ -29,6 +29,13 @@
             {{ form.as_p }}
             <button type="submit" class="btn btn-primary">Envoyer</button>
         </form>
+    {% elif mode == 'attendance' %}
+        <h2>Faire l'Appel</h2>
+        <form method="post"  class="form-check form-check-inline">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Enregistrer l'Appel</button>
+        </form>
     {% elif mode == 'details' %}
         <h2>Vos absences</h2>
         <table class='table'>
@@ -36,7 +43,8 @@
                 <tr>
                     <th>Date</th>
                     <th>Statut</th>
-                    <th>Matière</th>
+                    <th>Etudiant</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -44,7 +52,15 @@
                     <tr>
                         <td>{{ absence.date|date:"Y-m-d" }} {{ absence.date|time:"H:i:s" }}</td>
                         <td>{{ absence.get_status_display }}</td>
-                        <td>{{ absence.subject.name}}
+                        <td>{{ absence.student}}
+                        <td>
+                            <form method="post" action="{% url 'absence:absence_delete' id=absence.subject.name %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="absence_id" value="{{ absence.id }}">
+                                <button type="submit" class="btn btn-danger">Supprimer</button>
+                            </form>
+                            <a href="{% url 'absence:absence_edit' id=absence.id %}" class="btn btn-warning">Modifier</a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -67,9 +83,17 @@
                 {% endif %}
             </span>
         </div>
+    {% elif mode == 'attendance' %}
+        <h2>Faire l'Appel</h2>
+        <form method="post"  class="form-check form-check-inline">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Enregistrer l'Appel</button>
+        </form>
     {% endif %}
     <a href="?details">Voir les détails des absences</a>
     <a href="?">Saisir une absence</a>
+    <a href="?attendance">Faire l'appel</a>
     <footer>
         <p>&copy; 2024 Newdle. All rights deserved.</p>
     </footer>
