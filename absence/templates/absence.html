@@ -54,7 +54,6 @@
                         <td>{{ absence.get_status_display }}</td>
                         <td>{{ absence.student}}
                         <td>
-                            <!-- Ajouter un formulaire de suppression avec un bouton de soumission -->
                             <form method="post" action="{% url 'absence:absence_delete' id=absence.subject.name %}">
                                 {% csrf_token %}
                                 <input type="hidden" name="absence_id" value="{{ absence.id }}">
