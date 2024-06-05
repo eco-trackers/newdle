@@ -36,7 +36,7 @@
                 <tr>
                     <th>Date</th>
                     <th>Statut</th>
-                    <th>Matière</th>
+                    <th>Etudiant</th>
                 </tr>
             </thead>
             <tbody>
@@ -44,7 +44,7 @@
                     <tr>
                         <td>{{ absence.date|date:"Y-m-d" }} {{ absence.date|time:"H:i:s" }}</td>
                         <td>{{ absence.get_status_display }}</td>
-                        <td>{{ absence.subject.name}}
+                        <td>{{ absence.student}}
                     </tr>
                 {% endfor %}
             </tbody>
@@ -67,9 +67,17 @@
                 {% endif %}
             </span>
         </div>
+    {% elif mode == 'attendance' %}
+        <h2>Faire l'Appel</h2>
+        <form method="post"  class="form-check form-check-inline">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Enregistrer l'Appel</button>
+        </form>
     {% endif %}
     <a href="?details">Voir les détails des absences</a>
     <a href="?">Saisir une absence</a>
+    <a href="?attendance">Faire l'appel</a>
     <footer>
         <p>&copy; 2024 Newdle. All rights deserved.</p>
     </footer>
