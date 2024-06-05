@@ -84,6 +84,13 @@
                 {% endif %}
             </span>
         </div>
+    {% elif mode == 'attendance' %}
+        <h2>Faire l'Appel</h2>
+        <form method="post"  class="form-check form-check-inline">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Enregistrer l'Appel</button>
+        </form>
     {% endif %}
     <a href="?details">Voir les détails des absences</a>
     <a href="?">Saisir une absence</a>
