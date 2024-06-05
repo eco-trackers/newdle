@@ -9,4 +9,4 @@ class Profil(models.Model):
     group = models.ManyToManyField(to=Group)
 
     def __str__(self):
-        return str(self.user)
+        return self.user
