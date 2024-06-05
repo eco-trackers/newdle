@@ -1,5 +1,10 @@
 # Newdle
 
+## liens utiles
+
+- [Coding Style](./codingStyle.md)
+- [Cahier des charges](./CAHIER_CHARGE.md)
+
 ## Objectif
 
 L'objectif de ce projet est de développer une application éco-conçue pour la gestion des notes et des absences dans une école. L'application gérera les élèves, les enseignants et les matières.

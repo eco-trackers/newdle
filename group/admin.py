@@ -1,4 +1,4 @@
 from django.contrib import admin
-from notes.models import Note
+from group.models import Group
 # Register your models here.
-admin.site.register(Note)
+admin.site.register(Group)
