@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import Notes
 from django.contrib.auth.decorators import login_required
 
+
 @login_required
 def list_notes_view(request,subject_name=None,):
     if request.user.profil.type == '2':  
