@@ -1,18 +1,18 @@
 from django.shortcuts import render
-from .models import Notes
+from .models import Note
 from django.contrib.auth.decorators import login_required
 
 
 @login_required
 def list_notes_view(request,subject_name=None,):
     if request.user.profil.type == '2':  
-        notes = Notes.objects.all().select_related('subject', 'student')  
+        notes = Note.objects.all().select_related('subject', 'student')  
     elif request.user.profil.type == '1':
         subjects=get_prof_subjects(request.user.id)
-        notes = Notes.objects.filter(subjects=subjects).select_related('subject', 'student')
+        notes = Note.objects.filter(subjects=subjects).select_related('subject', 'student')
     elif request.user.profil.type == '0':
         subjects=get_student_subjects(request.user.id)     
-        notes = Notes.objects.filter(subjects=subjects).select_related('subject')
+        notes = Note.objects.filter(subjects=subjects).select_related('subject')
     else :
         return render(request, 'notes/unauthorized.html')
     context = {

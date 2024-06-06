@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from .models import Subject
+from profil.models import Profil
 
 # 0 etudiant
 # 1 prof
@@ -21,7 +22,8 @@ def subjects_home_view(request): # show the list of subjects to manage
     else:
         print("user unknown")
         subjects_list = []
-    return render(request,'subjects_template.html',{subjects_list:subjects_list})
+
+    return render(request,'subjects_template.html',{'subjects_list':subjects_list})
 
 @login_required
 def subjects_get_detail_view(request,subject_id): # show the details of a subject
