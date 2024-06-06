@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('subjects/', include('subjects.urls')),
@@ -24,4 +25,5 @@ urlpatterns = [
     path('absence/', include('absence.urls')),
     path('notes/',include('notes.urls')),
     path('profil/',include('profil.urls')),
+     path('', views.index, name='index'),
 ]
