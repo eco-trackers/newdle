@@ -18,6 +18,12 @@ def is_prof(subject_id,profil_id):
         return True
     return False
 
+def is_student(subject_id, profil_id):
+    subject = Subject.objects.get(name=subject_id)
+    user = Profil.objects.get(id=profil_id)
+    if subject.student_group.filter(id__in=user.group.all()).exists():
+        return True
+    return False
 
 class AbsenceView(View):
     @method_decorator(login_required)
@@ -25,7 +31,7 @@ class AbsenceView(View):
         user = Profil.objects.get(user=request.user)
         subject = Subject.objects.get(name=id)
         student_group = subject.student_group
-        if user.type == '0' and user.group.name == student_group.name:
+        if user.type == '0' and is_student(subject.name, user.id):
             if id is None or 'details' in request.GET:
                 absences = Absence.objects.filter(student=Profil.objects.get(user=request.user)).order_by('-date')
                 paginator = Paginator(absences, 10)
