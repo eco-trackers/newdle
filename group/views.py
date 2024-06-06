@@ -56,6 +56,16 @@ def edit(request, id):
         group = Group.objects.get(id=id)
         group.name = name
         group.save()
+
+        # Update the users in the group
+        users = User.objects.all()
+        print(request.POST)
+        for user in users:
+            if str(user.id) in request.POST.getlist('users'):
+                print('add')
+                Profil.objects.get(user=user).group.add(group)
+            else:
+                Profil.objects.get(user=user).group.remove(group)
         
         return redirect('group:show')
     
