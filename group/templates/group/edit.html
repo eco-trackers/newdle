@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <form action="{% url 'group:edit' group.id %}" method="post">
+            {% csrf_token %}
+            <input type="text" name="name" value="{{ group.name }}">
+            <button type="submit">Rename</button>
+
+            {% comment %} part for listing and editing who is in this group {% endcomment %}
+            <h2>Users</h2>
+            {% for user in users %}
+                <div>
+                    <h3>{{ user.user.username }}</h3>
+                    <input type="checkbox" name="users" value="{{ user.user.id }}" {% if user.in %}checked{% endif %}>
+                </div>
+            {% endfor %}
+            <button type="submit">Save</button>
+        </form>
+    </body>
+</html>
