@@ -1,9 +1,9 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 
 <head>
     <title>Subject Home</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 
 <body>
@@ -12,11 +12,12 @@
     <ul>
         {% for subject in subjects_list %}
         <li>
-            {% if request.user.type == 0 %}
-            <a href="{% url '' id= }">View Notes</a>
-            {% elif request.user.type == 1 %}
+            <h2>{{ subject.name }}</h2>
+            {% if request.user.type == '0' %}
+            
+            {% elif request.user.type == '1' %}
             <a href="website/subjects/{{ id }}">View Subjects</a>
-            {% elif request.user.type == 2 %}
+            {% elif request.user.type == '2' %}
             <a href="website/notes/{{ id }}">View Notes</a>
             <a href="website/subjects/{{ id }}">View Subjects</a>
             {% endif %}

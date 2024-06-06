@@ -12,9 +12,9 @@
     <header>
         <div class="menu-header">
             <div class="logo">
-                <a href="{% url 'login:index' %}">
+                {% comment %} <a href="{% url 'login:index' %}">
                     <img src="{% static '' %}" alt="App logo">
-                </a> 
+                </a>  {% endcomment %}
             </div>
             <div class="boutons-container">
                  <a href="{% url 'login:log_in' %}" class="button">Login</a> {#todo modifier les redirections selon header#}
