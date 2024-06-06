@@ -19,6 +19,7 @@ from django.urls import path,include
 from notes.views import notes_view
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('subjects/', include('subjects.urls')),
     path('login/', include('login.urls','django.contrib.auth.urls')),
     path('group/', include('group.urls')),
     path('absence/', include('absence.urls')),
