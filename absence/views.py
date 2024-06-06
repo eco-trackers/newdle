@@ -31,23 +31,23 @@ class AbsenceView(View):
                 paginator = Paginator(absences, 10)
                 page_number = request.GET.get('page')
                 absences = paginator.get_page(page_number)
-                return render(request, 'absence.html', {'mode': 'details', 'absences': absences, 'level': int(Profil.objects.get(user=request.user).type)})
+                return render(request, 'absence/absence.html', {'mode': 'details', 'absences': absences, 'level': int(Profil.objects.get(user=request.user).type)})
             else:
                 form = AbsenceForm()
-                return render(request, 'absence.html', {'mode': 'input', 'form': form})
+                return render(request, 'absence/absence.html', {'mode': 'input', 'form': form})
         elif (user.type == '1' and is_prof(subject.name, user.id)) or user.type == '2' :
             if id is None or 'details' in request.GET:
                 absences = Absence.objects.filter(subject=Subject.objects.get(name=id)).order_by('-date')
                 paginator = Paginator(absences, 10)
                 page_number = request.GET.get('page')
                 absences = paginator.get_page(page_number)
-                return render(request, 'absence.html', {'mode': 'details', 'absences': absences, 'level': int(Profil.objects.get(user=request.user).type)})
+                return render(request, 'absence/absence.html', {'mode': 'details', 'absences': absences, 'level': int(Profil.objects.get(user=request.user).type)})
             elif 'attendance' in request.GET:
                 form = AttendanceForm(subject=subject)
-                return render(request, 'absence.html', {'mode': 'attendance','form': form, 'level': int(Profil.objects.get(user=request.user).type)})
+                return render(request, 'absence/absence.html', {'mode': 'attendance','form': form, 'level': int(Profil.objects.get(user=request.user).type)})
             else:
                 form = AbsenceFormT(subject=subject)
-                return render(request, 'absence.html', {'mode': 'input', 'form': form, 'level': int(Profil.objects.get(user=request.user).type)})
+                return render(request, 'absence/absence.html', {'mode': 'input', 'form': form, 'level': int(Profil.objects.get(user=request.user).type)})
             
         else :
             return redirect('group:show')
@@ -66,7 +66,7 @@ class AbsenceView(View):
                 absence.date = now
                 absence.save()
                 return redirect(f"{reverse('absence:absence', kwargs={'id': id})}?details")  
-            return render(request, 'absence.html', {'mode': 'input', 'form': form})
+            return render(request, 'absence/absence.html', {'mode': 'input', 'form': form})
         elif (user.type == '1' and is_prof(subject.name, user.id)) or user.type == '2' :
             subject = Subject.objects.get(name=id)    
             if 'attendance' in request.GET: 
@@ -85,7 +85,7 @@ class AbsenceView(View):
                         )
                         absence.save() 
                     return redirect(f"{reverse('absence:absence', kwargs={'id': id})}?details")
-                return render(request, 'absence.html', {'mode': 'attendance', 'form': form})
+                return render(request, 'absence/absence.html', {'mode': 'attendance', 'form': form})
             else :      
                 form = AbsenceFormT(request.POST,subject=subject)
                 now = datetime.now()
@@ -94,7 +94,7 @@ class AbsenceView(View):
                     absence.subject = Subject.objects.get(name=id)
                     absence.save()
                     return redirect(f"{reverse('absence:absence', kwargs={'id': id})}?details")  
-                return render(request, 'absence.html', {'mode': 'input', 'form': form})
+                return render(request, 'absence/absence.html', {'mode': 'input', 'form': form})
         else :
             return redirect('group:show')
             
