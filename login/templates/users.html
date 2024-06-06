@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New users</title>
+    <link rel="stylesheet" href="">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body id="body-login">
+    
+    <h1>Informations Utilisateurs</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Adresse mail</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+                <tr>
+                    <td>{{ row.nom }}</td>
+                    <td>{{ row.prenom }}</td>
+                    <td>{{ row.email }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h2>Uploader un fichier CSV</h2>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="csv_file" accept=".csv">
+        <button type="submit">Uploader</button>
+    </form>
+    <footer>
+        <p>&copy; 2024 Newdle. All rights deserved.</p>
+    </footer>
+
+</body>
+</html>

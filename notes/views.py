@@ -27,7 +27,7 @@ def create_notes_view(request):
             form = NotesForm(request.POST)
             if form.is_valid():
                 form.save()
-                return redirect('list_notes')  
+                return redirect('list_notes') 
         else:
             form = NotesForm()
         context = {
@@ -36,6 +36,7 @@ def create_notes_view(request):
     else:
         return render(request, 'notes/unauthorized.html')
     return render(request, 'notes/create.html', context)
+ 
 @login_required
 def moyenne_view():
-    
+    return render(request, 'notes/create.html', context)
