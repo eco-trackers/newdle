@@ -4,65 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Newdle connection</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    
+    <title>Newdle Connection</title>
+    <link rel="stylesheet" href="">
 </head>
 <body id="body-login">
-    <header>
-        <div class="menu-header">
-            <div class="logo">
-                <a href="{% url 'login:index' %}">
-                    <img src="{% static '' %}" alt="App logo">
-                </a> 
+    
+    <div class="login">
+        <h2 id="form-title">Login</h2>
+        <form id="login-form" method="post" action="{% url 'login:log_in' %}">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <div class="form-buttons">
+                <input type="submit" value="Log in" id="login">
             </div>
-            <div class="boutons-container">
-                 <a href="{% url 'login:log_in' %}" class="button">Login</a> {#todo modifier les redirections selon header#}
+        </form>
+        <form id="forgot-password-form" method="post" action="{% url 'login:password_reset_request' %}">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Your email" required>
+            <div class="form-buttons">
+                <input type="submit" value="Reset" id="reset">
             </div>
-        </div>
-    </header>
-        <div class="login">
-            <h2>Login</h2>
-            <form id="login-form" method="post" action="{% url 'login:log_in' %}">
-                {% csrf_token %}
-                <input type="text" name="username" placeholder="Username" required>
-                <input type="password" name="password" placeholder="Password" required>
-                <div class="form-buttons">
-                    <input type="submit" value="Log in" id="login">
-                </div>
-            </form>
-            <!-- todo : <a href="/forgot-password">Forgot password?</a> -->
-        </div>
-        <div class="signin">
-            <h2>Sign in</h2>
-            <form id="signup-form" method="post" action="{% url 'login:sign_up' %}">
-                {% csrf_token %}
-                {# Afficher seulement le message d'aide global #}
-                {% if form.non_field_errors %}
-                    <div class="error-message">{{ form.non_field_errors }}</div>
-                {% endif %}
-                    
-                {% for field in form %}
-                    <div class="form-field">
-                        {{ field.label_tag }}
-                        {{ field }}
-                        <span class="help-text">{{ field.help_text }}</span>
-                        {% for error in field.errors %}
-                             <div class="error-message">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                {% endfor %}
-                    
-                <div class="form-buttons">
-                    <input type="submit" value="Sign up" id="signup">
-                </div>
-            </form>
-        </div>
-      
-   
+        </form>
+        <p><a href="#" id="forgot-password-link">Forgot your password?</a></p>
+    </div>
     <footer>
-        <p>&copy; 2024 Newdle. All rights deserved.</p>
+        <p>&copy; 2024 Newdle. All rights reserved.</p>
     </footer>
-
+    
+   
 </body>
 </html>
