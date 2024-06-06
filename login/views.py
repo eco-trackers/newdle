@@ -27,14 +27,14 @@ def log_in(request):
                 return redirect('/principal/')
     else:
         form = AuthenticationForm()
-    return render(request, 'connection.html', {'form': form})
+    return render(request, 'login/connection.html', {'form': form})
 
 def send_password_reset_email(user,email):
     token = default_token_generator.make_token(user)
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     reset_link = f"http://127.0.0.1:8000/login/reset/{uid}/{token}/"
     subject = 'Password Reset'
-    html_message = render_to_string('password_reset_email.html', {'username': user.username,'reset_link': reset_link})
+    html_message = render_to_string('login/password_reset_email.html', {'username': user.username,'reset_link': reset_link})
     plain_message = strip_tags(html_message)
     from_email = FROM_EMAIL
     to_email = email
@@ -120,7 +120,7 @@ def tab_and_upload_csv_view(request):
 
             messages.success(request, 'Users and profiles created or updated successfully')
 
-    return render(request, 'users.html', {'data': data, 'error': error})
+    return render(request, 'login/users.html', {'data': data, 'error': error})
 
 def password_reset_confirm(request, uidb64, token):
     try:
@@ -148,7 +148,7 @@ def password_reset_confirm(request, uidb64, token):
             messages.success(request, "Your password has been reset successfully.")
             return redirect('login:log_in')
         else:
-            return render(request, 'password_reset_form.html', {'uidb64': uidb64, 'token': token})
+            return render(request, 'login/password_reset_form.html', {'uidb64': uidb64, 'token': token})
     else:
         messages.error(request, "The reset password link is no longer valid.")
         return redirect('login:log_in')
@@ -165,4 +165,4 @@ def password_reset_request(request):
             messages.success(request, "A password reset link has been sent to your email address.")
         else:
             messages.error(request, "No user is associated with this email address.")
-    return render(request, 'password_reset_sent.html')
+    return render(request, 'login/password_reset_sent.html')
