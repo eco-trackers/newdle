@@ -17,6 +17,6 @@ class Subject(models.Model):
     student_group = models.ManyToManyField(to=Group)
     coef = models.CharField(max_length=3)
 
-
+    
     def __str__(self):
         return self.name + '|' + str(self.ue) + '|'  + str(self.prof) +'|' + str(self.student_group)
