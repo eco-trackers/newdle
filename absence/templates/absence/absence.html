@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <title>Absence : {{ subject_id }}</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
@@ -47,6 +47,7 @@
         <h2>Saisir une absence</h2>
         <form method="post">
             {% csrf_token %}
+            {% if level >= 1 %}
             <div class="form-group">
                 {{ form.date.label_tag }}
                 {{ form.date }}
@@ -59,8 +60,8 @@
                     {% endfor %}
                 </select>
             </div>
+            {% endif %}
             <div class="form-group">
-                <label>Statut</label>
                 {% for choice in form.status.field.choices %}
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" 
