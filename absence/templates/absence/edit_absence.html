@@ -50,30 +50,30 @@
               {{ form.date }}
           </div>
           <div class="form-group">
-             {% for choice in form.status.field.choices %}
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" 
-                               name="{{ form.status.name }}" 
-                               id="{{ form.status.name }}_{{ forloop.counter }}" 
-                               value="{{ choice.0 }}" 
-                               {% if form.status.value == choice.0 %}checked{% endif %}>
-                        <label class="form-check-label" for="{{ form.status.name }}_{{ forloop.counter }}">
-                            {{ choice.1 }}
-                        </label>
-                    </div>
-                {% endfor %}
-            </div>
-            <button type="submit" class="btn btn-primary">Envoyer</button>
-            <a href="{% url 'absence:absence' absence.subject.name %}?details" class="btn btn-secondary">Annuler</a>
-        </form> 
+            {% for choice in form.status.field.choices %}
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" 
+                  name="{{ form.status.name }}" 
+                  id="{{ form.status.name }}_{{ forloop.counter }}" 
+                  value="{{ choice.0 }}" 
+                  {% if form.status.value == choice.0 %}checked{% endif %}>
+                    <label class="form-check-label" for="{{ form.status.name }}_{{ forloop.counter }}">
+                      {{ choice.1 }}
+                    </label>
+                </div>
+              {% endfor %}
+          </div>
+          <button type="submit" class="btn btn-primary">Envoyer</button>
+          <a href="{% url 'absence:absence' absence.subject.name %}?details" class="btn btn-secondary">Annuler</a>
+      </form> 
     </div>
-</div>
-{% endblock %}
-<footer class="text-center py-3">
-  <div class="container">
-      <p>Crée avec ❤️ NEWDLE</p>
   </div>
-</footer>
+  {% endblock %}
+  <footer class="text-center py-3">
+    <div class="container">
+        <p>Crée avec ❤️ NEWDLE</p>
+    </div>
+  </footer>
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
