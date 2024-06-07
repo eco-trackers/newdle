@@ -160,7 +160,6 @@ def mark_presence_view(request, id):
     subject = Subject.objects.get(name=id)
     photo = get_object_or_404(ClassPhoto, subject=subject.id, upload_date__gte=time_threshold)
     if request.method == 'POST':
-
         pass
     return render(request, 'absence/mark_presence.html', {'photo': photo})
 
