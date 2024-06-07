@@ -1,37 +1,60 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Newdle Connection</title>
-    <link rel="stylesheet" href="">
+    <title>Page de connexion</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-<body id="body-login">
-    
-    <div class="login">
-        <h2 id="form-title">Login</h2>
-        <form id="login-form" method="post" action="{% url 'login:log_in' %}">
-            {% csrf_token %}
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <div class="form-buttons">
-                <input type="submit" value="Log in" id="login">
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title text-center">Se connecter</h3>
+                <form id="login-form" method="post" action="{% url 'login:log_in' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" name="username" placeholder="Username" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="password" placeholder="Password" required class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Se connecter</button>
+                </form>
+                <div class="text-center mt-3">
+                    <a href="#" data-toggle="collapse" data-target="#loginForm, #passwordResetForm" aria-expanded="false" aria-controls="loginForm passwordResetForm">Mot de passe oublié? Réinitialiser</a>
+                </div>
             </div>
-        </form>
-        <form id="forgot-password-form" method="post" action="{% url 'login:password_reset_request' %}">
-            {% csrf_token %}
-            <input type="text" name="username" placeholder="Your email" required>
-            <div class="form-buttons">
-                <input type="submit" value="Reset" id="reset">
+        </div>
+        <div id="passwordResetForm" class="collapse mt-3">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title text-center">Réinitialiser son mot de passe</h3>
+                    <form id="forgot-password-form" method="post" action="{% url 'login:password_reset_request' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="text" name="username" placeholder="Your username" required class="form-control">
+                        </div>
+                        <div class="form-buttons">
+                            <input type="submit" value="Reset" class="btn btn-primary">
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <a href="#" data-toggle="collapse" data-target="#passwordResetForm, #loginForm" aria-expanded="false" aria-controls="passwordResetForm loginForm">Vous avez déjà un compte? Se connecter</a>
+                    </div>
+                </div>
             </div>
-        </form>
-        <p><a href="#" id="forgot-password-link">Forgot your password?</a></p>
+        </div>
+       
     </div>
+    
     <footer>
         <p>&copy; 2024 Newdle. All rights reserved.</p>
     </footer>
-    
-   
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

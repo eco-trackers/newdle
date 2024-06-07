@@ -8,19 +8,25 @@ class AbsenceForm(forms.ModelForm):
         model = Absence
         fields = ['status']
         widgets = {
-            'status': forms.RadioSelect(choices=Absence.STATUS_CHOICES, attrs={'class': 'form-check'}),
+            'status': forms.RadioSelect(attrs={'class': 'form-check'}),
         }
         labels = {
             'status': 'Statut',
         }
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['status'].choices = Absence.STATUS_CHOICES
+        self.fields['status'].initial = '1'  
+        
 class AbsenceFormT(forms.ModelForm):
     class Meta:
         model = Absence
         fields = ['date','student','status']
         widgets = {
             'date': forms.DateTimeInput(format='%Y-%m-%d %H:%M:%S', attrs={'class':'datetimefield'}),
-            'status': forms.RadioSelect(choices=Absence.STATUS_CHOICES, attrs={'class': 'form-check'}),
+            'status': forms.RadioSelect(attrs={'class': 'form-check-input',  'type':'checkbox'}),
+            'student': forms.Select(attrs={'class': 'form-control'}),
         }
         labels = {
             'date': 'Date de l\'absence',
@@ -30,11 +36,14 @@ class AbsenceFormT(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         subject = kwargs.pop('subject', None)
         super().__init__(*args, **kwargs)
+        self.fields['status'].choices = Absence.STATUS_CHOICES
+        self.fields['status'].initial = '1'  
         if subject:
             # Récupérer les instances du groupe associé au sujet
             student_groups = subject.student_group.all()
             # Filtrer les profils par ces instances de groupe
             self.fields['student'].queryset = Profil.objects.filter(group__in=student_groups)
+        
             
             
 class AttendanceForm(forms.ModelForm):
@@ -67,7 +76,7 @@ class AttendanceForm(forms.ModelForm):
 class EditAbsenceForm(forms.ModelForm):
     class Meta:
         model = Absence
-        fields = ['status', 'date']
+        fields = ['date','status']
         widgets = {
             'date': forms.DateTimeInput(format='%Y-%m-%d %H:%M:%S', attrs={'class':'datetimefield'}),
             'status': forms.RadioSelect(choices=Absence.STATUS_CHOICES),
@@ -76,6 +85,10 @@ class EditAbsenceForm(forms.ModelForm):
             'date': 'Date de l\'absence',
             'status': 'Statut',
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['status'].choices = Absence.STATUS_CHOICES
+        self.fields['status'].initial = '1'  
 
 
 

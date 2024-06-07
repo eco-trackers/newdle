@@ -76,6 +76,14 @@ main {
   background-color: var(--primary-color-hover);
 }
 
+.btn-secondary {
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+}
+
 a {
   color: var(--primary-color);
 }
