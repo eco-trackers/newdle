@@ -1,0 +1,21 @@
+<h1>liste des notes</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>matiere</th>
+            <th>eleve</th>
+            <th>note</th>
+        </tr>
+    </thead>
+    <tbody>
+        {%for%}
+        <tr>
+            <td>{{matière}}</td>
+            <td>{{eleve}}</td>
+            <td>{{note}}</td>
+
+        </tr>
+        {%endfor%}
+    </tbody>
+</table>
