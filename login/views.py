@@ -78,17 +78,17 @@ def tab_and_upload_csv_view(request):
                 last_name = entry["nom"]
                 email = entry["email"]
                 role = entry["role"]
-                default_password = entry["password"]
+                default_password = entry["password"] or User.objects.make_random_password()
                 username = f"{first_name}.{last_name}@uha.fr"
 
                 if role == 'student':
                     user_type = '0'
-                elif role == 'prof':
+                elif role == 'professor':
                     user_type = '1'
                 elif role == 'admin':
                     user_type = '2'
-                else:
-                    continue  # Ignorer si le rôle n'est pas reconnu
+                else: # par défaut étudiant
+                    user_type = '0'
                 
                 # Récupérer ou créer l'utilisateur avec le nom d'utilisateur
                 user, created = User.objects.get_or_create(username=username, defaults={'first_name':first_name,'last_name':last_name})
