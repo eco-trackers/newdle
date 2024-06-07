@@ -5,8 +5,8 @@ from subjects.models import Subject
 # Create your models here.
 class Absence(models.Model) :
     STATUS_CHOICES = [
-        ('0', 'Absent'),
-        ('1', 'Présent'),
+        ('0', 'Absent(e)'),
+        ('1', 'Présent(e)'),
         ('2', 'En retard'),
     ]
     status = models.CharField(max_length=1, choices=STATUS_CHOICES) # 0->Absent 1->Present 2->Retard

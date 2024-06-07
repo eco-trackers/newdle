@@ -18,6 +18,12 @@ def is_prof(subject_id,profil_id):
         return True
     return False
 
+def is_student(subject_id, profil_id):
+    subject = Subject.objects.get(name=subject_id)
+    user = Profil.objects.get(id=profil_id)
+    if subject.student_group.filter(id__in=user.group.all()).exists():
+        return True
+    return False
 
 class AbsenceView(View):
     @method_decorator(login_required)
@@ -25,13 +31,13 @@ class AbsenceView(View):
         user = Profil.objects.get(user=request.user)
         subject = Subject.objects.get(name=id)
         student_group = subject.student_group
-        if user.type == '0' and user.group.name == student_group.name:
+        if user.type == '0' and is_student(subject.name, user.id):
             if id is None or 'details' in request.GET:
                 absences = Absence.objects.filter(student=Profil.objects.get(user=request.user)).order_by('-date')
                 paginator = Paginator(absences, 10)
                 page_number = request.GET.get('page')
                 absences = paginator.get_page(page_number)
-                return render(request, 'absence/absence.html', {'mode': 'details', 'absences': absences, 'level': int(Profil.objects.get(user=request.user).type)})
+                return render(request, 'absence/absence.html', {'mode': 'details', 'absences': absences, 'level': int(Profil.objects.get(user=request.user).type), 'subject_id': id })
             else:
                 form = AbsenceForm()
                 return render(request, 'absence/absence.html', {'mode': 'input', 'form': form})
@@ -41,13 +47,25 @@ class AbsenceView(View):
                 paginator = Paginator(absences, 10)
                 page_number = request.GET.get('page')
                 absences = paginator.get_page(page_number)
-                return render(request, 'absence/absence.html', {'mode': 'details', 'absences': absences, 'level': int(Profil.objects.get(user=request.user).type)})
+                return render(request, 'absence/absence.html', {'mode': 'details', 'absences': absences, 'level': int(Profil.objects.get(user=request.user).type), 'subject_id': id})
             elif 'attendance' in request.GET:
                 form = AttendanceForm(subject=subject)
-                return render(request, 'absence/absence.html', {'mode': 'attendance','form': form, 'level': int(Profil.objects.get(user=request.user).type)})
+                context = {
+                    'mode': 'attendance',
+                    'form': form,
+                    'level': int(Profil.objects.get(user=request.user).type),
+                    'subject_id': id
+                }
+                return render(request, 'absence/absence.html', context)
             else:
                 form = AbsenceFormT(subject=subject)
-                return render(request, 'absence/absence.html', {'mode': 'input', 'form': form, 'level': int(Profil.objects.get(user=request.user).type)})
+                context = {
+                    'mode': 'input',
+                    'form': form,
+                    'level': int(Profil.objects.get(user=request.user).type),
+                    'subject_id': id
+                }
+                return render(request, 'absence/absence.html', context)
             
         else :
             return redirect('group:show')
@@ -121,4 +139,4 @@ def edit_absence(request, id):
             return redirect(reverse('absence:absence', kwargs={'id': absence.subject.name}) + '?details')
     else:
         form = EditAbsenceForm(instance=absence)
-    return render(request, 'edit_absence.html', {'form': form, 'absence': absence})
+    return render(request, 'absence/edit_absence.html', {'form': form, 'absence': absence})

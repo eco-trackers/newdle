@@ -61,6 +61,14 @@ main {
     font-size: 16px;
 }
 
+.btn-secondary {
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+}
+
 .btn-primary:hover {
     background-color: #cb80ff;
 }
