@@ -23,3 +23,12 @@ class Absence(models.Model) :
     def __str__(self):
         status_display = self.get_status_display_custom()
         return status_display + '|' + str(self.subject)+'|'+str(self.student)
+
+
+class ClassPhoto(models.Model):
+    photo = models.ImageField(upload_to='static/class_photos/')
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    upload_date = models.DateTimeField(default=datetime.now)
+
+    def __str__(self):
+        return f"Photo for {self.subject.name} uploaded on {self.upload_date}"

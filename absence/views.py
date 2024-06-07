@@ -3,11 +3,11 @@ from django.views import View
 from django.urls import reverse
 from profil.models import Profil
 from subjects.models import Subject
-from .models import Absence
-from .forms import AbsenceForm, AbsenceFormT, AttendanceForm, EditAbsenceForm
+from .models import Absence, ClassPhoto
+from .forms import AbsenceForm, AbsenceFormT, AttendanceForm, EditAbsenceForm, PhotoUploadForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.core.paginator import Paginator
 # Create your views here.
 
@@ -140,3 +140,51 @@ def edit_absence(request, id):
     else:
         form = EditAbsenceForm(instance=absence)
     return render(request, 'absence/edit_absence.html', {'form': form, 'absence': absence})
+
+
+@login_required
+def upload_photo_view(request,id):
+    if request.method == 'POST':
+        form = PhotoUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            photo = form.save(commit=False)
+            photo.subject = Subject.objects.get(name=id)
+            photo.save()
+            return redirect(reverse('absence:absence', kwargs={'id': id}) + '?details')
+    else:
+        form = PhotoUploadForm()
+    return render(request, 'absence/upload_photo.html', {'form': form})
+
+def mark_presence_view(request, id):
+    time_threshold = datetime.now() - timedelta(hours=2)
+    subject = Subject.objects.get(name=id)
+    photo = get_object_or_404(ClassPhoto, subject=subject.id, upload_date__gte=time_threshold)
+    if request.method == 'POST':
+
+        pass
+    return render(request, 'absence/mark_presence.html', {'photo': photo})
+
+def get_subjects(profil_id):
+        user = Profil.objects.get(id=profil_id)
+        groups = user.group.all()
+        subjects = Subject.objects.filter(student_group__in=groups).distinct()
+        return subjects
+def get_subjects_prof(profil_id):
+        user = Profil.objects.get(id=profil_id)
+        subjects =  Subject.objects.filter(prof = user.id).distinc()
+        return subjects
+      
+@login_required
+def absence_main(request):
+    user = Profil.objects.get(user=request.user)
+    type = user.type
+    match type:
+        case 0:
+            subjects = get_subjects(user.id)
+        case 1:
+            subjects = get_subjects_prof(user.id)
+        case 2:
+            subjects = Subject.objects.all()
+
+
+    return render(request, 'absence/absence_main.html', {'subjects':subjects, 'type':type})

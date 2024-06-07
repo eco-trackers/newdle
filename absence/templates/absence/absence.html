@@ -137,7 +137,7 @@
             <tbody>
                 {% for absence in absences %}
                     <tr>
-                        <td>{{ absence.date|date:"Y-m-d" }} {{ absence.date|time:"H:i:s" }}</td>
+                        <td>{{ absence.date|date:"Y-m-d" }} {{ absence.date|time:"H:i" }}</td>
                         <td>{{ absence.get_status_display }}</td>
                         <td>{{ absence.student}}
                         {% if level >= 1 %}
@@ -189,6 +189,10 @@
             <a href="?" class="btn btn-primary">Saisir une absence</a>
             {% if level >= 1 %}
             <a href="?attendance" class="btn btn-primary">Faire l'appel</a>
+            <a href="upload_photo" class="btn btn-primary">Absence v2</a>
+            {% endif %}
+            {% if level == 0 %}
+            <a href="mark_presence" class="btn btn-primary">Absence v2</a>
             {% endif %}
         </div>
     </div>
