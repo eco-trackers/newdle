@@ -1,10 +1,11 @@
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views import View
 from django.urls import reverse
 from profil.models import Profil
 from subjects.models import Subject
-from .models import Absence, ClassPhoto
-from .forms import AbsenceForm, AbsenceFormT, AttendanceForm, EditAbsenceForm, PhotoUploadForm
+from .models import Absence, ClassPhoto, Pin
+from .forms import AbsenceForm, AbsenceFormT, AttendanceForm, DateForm, EditAbsenceForm, PhotoUploadForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from datetime import datetime, timedelta
@@ -158,11 +159,30 @@ def upload_photo_view(request,id):
 def mark_presence_view(request, id):
     time_threshold = datetime.now() - timedelta(hours=2)
     subject = Subject.objects.get(name=id)
-    photo = get_object_or_404(ClassPhoto, subject=subject.id, upload_date__gte=time_threshold)
-    if request.method == 'POST':
-        pass
-    return render(request, 'absence/mark_presence.html', {'photo': photo})
+    user = Profil.objects.get(user=request.user)
+    if ClassPhoto.objects.filter(subject=subject.id, upload_date__gte=time_threshold).exists():
+        photo = ClassPhoto.objects.get(subject=subject.id, upload_date__gte=time_threshold)
+        if request.method == 'POST':
+            if not Pin.objects.filter(photo=photo, user=user).exists():
+                x = float(request.POST['x'])
+                y = float(request.POST['y'])
+                pin = Pin(photo=photo, user=user, x=x, y=y)
+                pin.save()
+                return JsonResponse({'status': 'ok', 'pin_id': pin.id})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Vous avez déjà placé un pin.'})
 
+        pins = Pin.objects.filter(photo=photo)
+        user_pin = pins.filter(user=user).first()
+        user_pin_data = None
+        if user_pin:
+            user_pin_data = {
+                'x': user_pin.x,
+                'y': user_pin.y
+            }
+        return render(request, 'absence/mark_presence.html', {'photo': photo, 'mode':'photo','subject':id, 'pins': pins,'user_pin': user_pin, 'user_pin': user_pin_data})
+    else :
+        return render(request, 'absence/mark_presence.html', {'mode':'nophoto', 'subject':id})
 def get_subjects(profil_id):
         user = Profil.objects.get(id=profil_id)
         groups = user.group.all()
@@ -187,3 +207,29 @@ def absence_main(request):
 
 
     return render(request, 'absence/absence_main.html', {'subjects':subjects, 'type':type})
+
+@login_required
+def check_photo(request,id):
+    subject = get_object_or_404(Subject, name=id)
+    form = DateForm(request.GET or None)
+    photo = None
+    pins = []
+
+    if form.is_valid():
+        selected_date = form.cleaned_data['date']
+        time_threshold = selected_date - timedelta(hours=2)
+        
+        photo = ClassPhoto.objects.get(
+            subject=subject,
+            upload_date__gte=time_threshold
+        )
+
+        if photo:
+            pins = Pin.objects.filter(photo=photo)  # Assuming `pins` is a related name for pin placements
+
+    return render(request, 'absence/check_photo.html', {
+        'form': form,
+        'photo': photo,
+        'pins': pins,
+        'subject': subject
+    })

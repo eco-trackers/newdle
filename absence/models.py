@@ -32,3 +32,13 @@ class ClassPhoto(models.Model):
 
     def __str__(self):
         return f"Photo for {self.subject.name} uploaded on {self.upload_date}"
+    
+class Pin(models.Model):
+    photo = models.ForeignKey(ClassPhoto, on_delete=models.CASCADE)
+    user = models.ForeignKey(Profil, on_delete=models.CASCADE)
+    x = models.FloatField()
+    y = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Pin by {self.user} on {self.photo}"

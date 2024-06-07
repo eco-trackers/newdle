@@ -4,29 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Absence : {{ subject }}</title>
+  <title>Absence : {{ subject_id }}</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <style>
-    #photo-container {
-        position: relative;
-        display: inline-block;
-    }
-
-    #photo {
-        max-width: 100%;
-        height: auto;
-    }
-
-    .pin {
-        position: absolute;
-        width: 20px;
-        height: 20px;
-        background-color: red;
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-    }
-  </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #303030;">
@@ -59,29 +39,30 @@
       <li><a href="#">A propos</a></li>
     </ul>
   </div>
-  {% if mode == "photo" %}
-  {% block mark %}
-  <h2>Marquer votre présence</h2>
   <div class="container">
-    <div id="photo-container">
-      <img src="{{ photo.photo.url }}" alt="Photo de la classe" class="img-fluid">
-      <!-- Pins will be inserted here by JavaScript -->
-  </div>
-    
-    <form method="post">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-primary">Soumettre</button>
+    <h2>Vision Professeur</h2>
+    <form method="get">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.date.label_tag }}
+            {{ form.date }}
+        </div>
+        <button type="submit" class="btn btn-primary">Voir la photo</button>
     </form>
-  </div>
-{% endblock %}
-{% endif %}
-{% if mode == "nophoto" %}
-  {% block no %}
-  <h2>Désolé il n'y a pas encore de photo</h2>
-  <a href="{% url 'absence:absence' subject %}?details" class="btn btn-secondary">Retour au détail</a>
-  {% endblock %}
-{% endif %}
-
+    {% if photo %}
+    <div id="photo-container">
+        <img id="photo" src="{{ photo.image.url }}" alt="Class Photo">
+        <!-- Pins will be inserted here by JavaScript -->
+        {% for pin in pins %}
+        <div class="pin" style="left: {{ pin.x|floatformat:2 }}%; top: {{ pin.y|floatformat:2 }}%;">
+            <!-- Optionally add tooltip or info for the pin -->
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>Aucune photo disponible pour la date sélectionnée.</p>
+    {% endif %}
+</div>
   
   <footer class="footer mt-auto py-2" style="background-color: #341142;">
     <div class="container text-center">
@@ -91,41 +72,7 @@
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-  
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const image = document.getElementById('photo');
-        const photoContainer = document.getElementById('photo-container');
-
-        photoContainer.addEventListener('click', function(event) {
-            const rect = photoContainer.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            const normalizedX = x / rect.width;
-            const normalizedY = y / rect.height;
-
-            fetch('', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: `x=${normalizedX}&y=${normalizedY}`
-            }).then(response => response.json())
-            .then(data => {
-                if (data.status === 'ok') {
-                    const pin = document.createElement('div');
-                    pin.className = 'pin';
-                    pin.style.left = `${normalizedX * 100}%`;
-                    pin.style.top = `${normalizedY * 100}%`;
-                    photoContainer.appendChild(pin);
-                }
-            });
-        });
-
-        
-    });
-</script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script>
     const presentButton = document.getElementById('present');
     const absentButton = document.getElementById('absent');

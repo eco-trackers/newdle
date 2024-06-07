@@ -101,3 +101,9 @@ class PhotoUploadForm(forms.ModelForm):
         labels = {
             'photo': 'Téléverser une photo de la classe',
         }
+
+class DateForm(forms.Form):
+    date = forms.DateTimeField(
+        widget=forms.DateTimeInput(format='%Y-%m-%d %H:%M', attrs={'class':'datetimefield'}),
+        label='Sélectionner la date et l\'heure'
+    )
