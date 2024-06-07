@@ -1,97 +1,162 @@
-body {
-  font-family: 'Roboto', Arial, sans-serif;
+:root{
+  --text-color: #ffffff;
+  --background-color: #271f37;
+  --card-background-color: #1d1232;
+  --forms-background-color: #363434;
+  --forms-background-color-focus: #2c2c2c;
+  --primary-color: #6c35de;
+  --primary-color-hover: #cb80ff;
+  --primary-color-dark: #5a005a;
+}
+
+html, body {
+  height: 100%;
   margin: 0;
-  padding: 0;
-  background: #333333;
-}
-
-.attendance, .stats {
-  background-color: #303030;
-  color: #fff;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  width: 100%;
-  max-width: 500px;
-}
-
-.attendance h2, .stats h2 {
-  margin-top: 0;
-  margin-bottom: 30px;
-  text-align: center;
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.footer {
-  position: fixed;
-  width: 100%;
-  bottom: 0;
-  background-color: black; /* Couleur violette */
-  color: black;
-  text-align: center;
-  padding: 5px 0;
-  height: 35px;  /* Ajustement de la hauteur de la barre inférieure */
-}
-
-.footer .container {
   display: flex;
+  flex-direction: column;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+main {
+  flex: 1;
+}
+
+.container {
+  margin-top: 10px;
+  padding: 0;
+}
+
+.card {
+  background-color: var(--card-background-color);
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+}
+
+.card-title {
+  margin-bottom: 20px;
+  font-weight: 300;
+}
+
+.form-control {
+  background-color: var(--forms-background-color);
+  border: none;
+  color: var(--text-color);
+  border-radius: 5px;
+}
+
+.form-control:focus {
+  background-color: var(--forms-background-color-focus);
+  color: var(--text-color);
+  box-shadow: none;
+  border-color: var(--primary-color-hover);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-color-hover);
+}
+
+a {
+  color: var(--primary-color);
+}
+
+a:hover {
+  color: var(--primary-color-hover);
+  text-decoration: none;
+}
+
+.text-center {
+  margin-top: 20px;
+}
+
+/* Header Styles */
+header {
+  background-color: var(--background-color);
+}
+
+header .container {
+  display: flex;
+  flex-direction: column;  /* Changed to column to stack items */
   justify-content: center;
   align-items: center;
-  height: 100%;
+  text-align: center;
+  height: calc(72.5vh - 56px - 40px);
 }
 
-/* Sidenav menu */
-.sidenav {
-  height: 100%;
-  width: 150px;
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: -250px;
-  background-color: #341142;
-  padding-top: 60px;
-  transition: left 0.5s ease;
+header h1 {
+  font-weight: bold;
+  margin-bottom: 20px;
 }
 
-/* Sidenav menu links */
-.sidenav a {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: 25px;
-  color: white;
-  display: block;
-  transition: 0.3s;
+header .lead {
+  margin-bottom: 40px;
+  color: var(--text-color);
 }
 
-.sidenav a:hover {
-  color: #111;
+header .btn-dark {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--text-color);
 }
 
-.sidenav ul {
-  list-style-type: none;
+header .btn-dark:hover {
+  background-color: var(--primary-color-dark);
+  border-color: var(--primary-color-dark);
+}
+
+footer {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  text-align: center;
   padding: 0;
   margin: 0;
 }
 
-/* Active class */
-.sidenav.active {
-  left: 0;
+.navbar {
+  background-color: var(--background-color);
 }
 
-/* Close btn */
-.sidenav .close {
-  position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
+.nav-item {
+  color: var(--primary-color-hover);
 }
 
-/* Icône burger */
-.burger-icon span {
-  display: block;
-  width: 35px;
-  height: 5px;
-  background-color:#fdfdfd;
-  margin: 6px 0;
+.navbar-brand {
+  font-weight: bold;
+  color: var(--text-color) !important;
+}
+
+.navbar-nav .nav-link {
+  margin-right: 15px;
+  color: var(--text-color) !important;
+}
+
+.navbar-nav .btn-outline-dark {
+  margin-left: 15px;
+  color: var(--text-color) !important;
+  border-color: var(--primary-color);
+}
+
+.navbar-nav .btn-outline-dark:hover {
+  background-color: var(--primary-color);
+  color: var(--text-color) !important;
 }
