@@ -5,7 +5,7 @@ from .models import Profil
 @login_required
 def profil_render(request):
     profil = get_object_or_404(Profil, user=request.user)
-    return render(request, 'account.html',{'profil':profil})
+    return render(request, 'profil/account.html',{'profil':profil})
     
 def index_view(request):
     return render(request, 'index.html')

@@ -1,10 +1,11 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New users</title>
+    <title>Gestion des utilisateurs</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
         table {
@@ -20,40 +21,95 @@
         }
     </style>
 </head>
-<body id="body-login">
-    
-    <h1>Informations Utilisateurs</h1>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Adresse mail</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in data %}
-                <tr>
-                    <td>{{ row.nom }}</td>
-                    <td>{{ row.prenom }}</td>
-                    <td>{{ row.email }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <h2>Uploader un fichier CSV</h2>
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% endif %}
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="file" name="csv_file" accept=".csv">
-        <button type="submit">Uploader</button>
-    </form>
-    <footer>
-        <p>&copy; 2024 Newdle. All rights deserved.</p>
-    </footer>
+<body>
+    <div class="container mt-5">
+        <div class="text-right mb-3">
+            <form method="post" action="{% url 'login:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Déconnexion</button>
+            </form>
+        </div>
 
+        <h1>Informations Utilisateurs</h1>
+        
+        <!-- Tableau des utilisateurs -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Adresse mail</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                    <tr>
+                        <td>{{ row.nom }}</td>
+                        <td>{{ row.prenom }}</td>
+                        <td>{{ row.email }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Formulaire de suppression des utilisateurs -->
+        <h2>Supprimer des utilisateurs</h2>
+        <form method="post" action="{% url 'login:delete_users' %}">
+            {% csrf_token %}
+            <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="select-all"></th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Adresse mail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data %}
+                        <tr>
+                            <td><input type="checkbox" name="user_usernames" value="{{ row.email }}"></td>  <!-- Utiliser l'email comme valeur -->
+                            <td>{{ row.nom }}</td>
+                            <td>{{ row.prenom }}</td>
+                            <td>{{ row.email }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-danger mt-3">Supprimer les utilisateurs sélectionnés</button>
+        </form>
+
+        <script>
+            document.getElementById('select-all').onclick = function() {
+                var checkboxes = document.getElementsByName('user_usernames');
+                for (var checkbox of checkboxes) {
+                    checkbox.checked = this.checked;
+                }
+            }
+        </script>
+
+        <h2>Uploader un fichier CSV</h2>
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="csv_file" accept=".csv">
+            <div class="form-group mt-3">
+                <input type="radio" id="create_update" name="action" value="create_update" checked>
+                <label for="create_update">Créer/Mettre à jour des utilisateurs</label><br>
+                <input type="radio" id="delete" name="action" value="delete">
+                <label for="delete">Supprimer des utilisateurs</label><br>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Uploader</button>
+        </form>
+
+        <footer class="mt-5">
+            <p>&copy; 2024 Newdle. Tous droits réservés.</p>
+        </footer>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
