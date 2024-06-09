@@ -11,13 +11,14 @@
     #photo-container {
         position: relative;
         display: inline-block;
+        max-width: 100%; /* Limite la largeur maximale à 100% du conteneur parent */
+        height: auto; /* Permet de maintenir le ratio de l'image */
     }
-
     #photo {
-        max-width: 100%;
-        height: auto;
+        width: 100%; /* Adapte la photo à la largeur du conteneur */
+        max-height: 500px; /* Définit une hauteur maximale */
+        object-fit: contain; /* Assure que l'image garde son aspect ratio */
     }
-
     .pin {
         position: absolute;
         width: 20px;
@@ -25,8 +26,9 @@
         background-color: red;
         border-radius: 50%;
         transform: translate(-50%, -50%);
+        cursor: pointer; /* Change le curseur pour indiquer que c'est interactif */
     }
-  </style>
+</style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #303030;">
@@ -59,22 +61,44 @@
       <li><a href="#">A propos</a></li>
     </ul>
   </div>
-  {% if mode == "photo" %}
   {% block mark %}
   <h2>Marquer votre présence</h2>
+  <form method="get">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="photo-select">Choisir une photo</label>
+        <select id="photo-select" class="form-control" name="photo" onchange="this.form.submit()">
+            <option value="">Sélectionner une photo</option>
+            {% for photo in photos %}
+            <option value="{{ photo.id }}" {% if selected_photo and selected_photo.id == photo.id %}selected{% endif %}>
+                {{ photo.upload_date|date:"d M Y H:i" }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+</form>
+{% if mode == "npinned" %}
   <div class="container">
     <div id="photo-container">
-      <img src="{{ photo.photo.url }}" alt="Photo de la classe" class="img-fluid">
+      <img id="photo" src="{{ selected_photo.photo.url }}" alt="Photo de la classe" class="img-fluid">
       <!-- Pins will be inserted here by JavaScript -->
   </div>
-    
-    <form method="post">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-primary">Soumettre</button>
-    </form>
+    <a href="{% url 'absence:absence' subject %}?details" class="btn btn-secondary">Valider</a>
   </div>
-{% endblock %}
 {% endif %}
+{% if mode == "pinned" %}
+  <div class="container">
+    <h2>Vous avez déja équiter votre présence</h2>
+  </div>
+    <a href="{% url 'absence:absence' subject %}?details" class="btn btn-secondary">Retour</a>
+    <form action="{% url 'absence:mark_presence_delete' subject %}" method="post" class="d-inline">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-secondary">Annuler mon équitete</button>
+  </form>
+  </div>
+{% endif %}
+
+{% endblock %}
 {% if mode == "nophoto" %}
   {% block no %}
   <h2>Désolé il n'y a pas encore de photo</h2>
@@ -126,46 +150,6 @@
         
     });
 </script>
-  <script>
-    const presentButton = document.getElementById('present');
-    const absentButton = document.getElementById('absent');
-    const lateButton = document.getElementById('late');
-
-    const presentCount = document.getElementById('present-count');
-    const absentCount = document.getElementById('absent-count');
-    const lateCount = document.getElementById('late-count');
-
-    let present = 0;
-    let absent = 0;
-    let late = 0;
-
-    presentButton.addEventListener('click', () => {
-      present++;
-      presentCount.textContent = present;
-    });
-
-    absentButton.addEventListener('click', () => {
-      absent++;
-      absentCount.textContent = absent;
-    });
-
-    lateButton.addEventListener('click', () => {
-      late++;
-      lateCount.textContent = late;
-    });
-
-    // Sidenav script
-    const sidenav = document.getElementById("mySidenav");
-    const openBtn = document.getElementById("openBtn");
-    const closeBtn = document.getElementById("closeBtn");
-
-    openBtn.onclick = function() {
-      sidenav.classList.add("active");
-    }
-
-    closeBtn.onclick = function() {
-      sidenav.classList.remove("active");
-    }
-  </script>
+  
 </body>
 </html>

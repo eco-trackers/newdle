@@ -7,6 +7,31 @@
   <title>Absence : {{ subject_id }}</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <style>
+        #photo-container {
+            position: relative;
+            display: inline-block;
+            max-width: 100%; /* Limite la largeur maximale à 100% du conteneur parent */
+            height: auto; /* Permet de maintenir le ratio de l'image */
+        }
+        #photo {
+            width: 100%; /* Adapte la photo à la largeur du conteneur */
+            max-height: 500px; /* Définit une hauteur maximale */
+            object-fit: contain; /* Assure que l'image garde son aspect ratio */
+        }
+        .pin {
+          position: absolute;
+          background-color: red; /* Optional: Set background color if needed */
+          border-radius: 5px; /* Rounded corners for the pin box */
+          padding: 2px 6px; /* Padding around the text */
+          font-size: 12px; /* Font size for the text */
+          color: white; /* Text color */
+          white-space: nowrap; /* Prevents text from wrapping */
+          transform: translate(-50%, -50%);
+          cursor: pointer;
+      }
+
+    </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #303030;">
@@ -44,23 +69,29 @@
     <form method="get">
         {% csrf_token %}
         <div class="form-group">
-            {{ form.date.label_tag }}
-            {{ form.date }}
+            <label for="photo-select">Choisir une photo</label>
+            <select id="photo-select" class="form-control" name="photo" onchange="this.form.submit()">
+                <option value="">Sélectionner une photo</option>
+                {% for photo in photos %}
+                <option value="{{ photo.id }}" {% if selected_photo and selected_photo.id == photo.id %}selected{% endif %}>
+                    {{ photo.upload_date|date:"d M Y H:i" }}
+                </option>
+                {% endfor %}
+            </select>
         </div>
-        <button type="submit" class="btn btn-primary">Voir la photo</button>
     </form>
-    {% if photo %}
+
+    {% if selected_photo %}
     <div id="photo-container">
-        <img id="photo" src="{{ photo.image.url }}" alt="Class Photo">
-        <!-- Pins will be inserted here by JavaScript -->
+        <img id="photo" src="{{ selected_photo.photo.url }}" alt="Class Photo">
         {% for pin in pins %}
-        <div class="pin" style="left: {{ pin.x|floatformat:2 }}%; top: {{ pin.y|floatformat:2 }}%;">
-            <!-- Optionally add tooltip or info for the pin -->
+        <div class="pin" data-x="{{ pin.x }}" data-y="{{ pin.y }}" style="left: {{ pin.x }}%; top: {{ pin.y }}%;" title="Pin de {{ pin.user }}">
+          {{ pin.user }} <!-- Display the name of the person -->
         </div>
         {% endfor %}
     </div>
     {% else %}
-    <p>Aucune photo disponible pour la date sélectionnée.</p>
+    <p>Aucune photo sélectionnée.</p>
     {% endif %}
 </div>
   
@@ -73,46 +104,29 @@
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
   <script>
-    const presentButton = document.getElementById('present');
-    const absentButton = document.getElementById('absent');
-    const lateButton = document.getElementById('late');
+    document.addEventListener("DOMContentLoaded", function() {
+      const img = document.getElementById('photo');
+      img.onload = function() {
+          const pins = document.querySelectorAll('.pin');
+          const imgWidth = img.offsetWidth;
+          const imgHeight = img.offsetHeight;
+  
+          pins.forEach(pin => {
+              const x = pin.getAttribute('data-x');
+              const y = pin.getAttribute('data-y');
+  
+              pin.style.left = x + '%';
+              pin.style.top = y + '%';
+          });
+      };
+  });
 
-    const presentCount = document.getElementById('present-count');
-    const absentCount = document.getElementById('absent-count');
-    const lateCount = document.getElementById('late-count');
-
-    let present = 0;
-    let absent = 0;
-    let late = 0;
-
-    presentButton.addEventListener('click', () => {
-      present++;
-      presentCount.textContent = present;
-    });
-
-    absentButton.addEventListener('click', () => {
-      absent++;
-      absentCount.textContent = absent;
-    });
-
-    lateButton.addEventListener('click', () => {
-      late++;
-      lateCount.textContent = late;
-    });
-
-    // Sidenav script
-    const sidenav = document.getElementById("mySidenav");
-    const openBtn = document.getElementById("openBtn");
-    const closeBtn = document.getElementById("closeBtn");
-
-    openBtn.onclick = function() {
-      sidenav.classList.add("active");
-    }
-
-    closeBtn.onclick = function() {
-      sidenav.classList.remove("active");
-    }
   </script>
+
+
 </body>
 </html>

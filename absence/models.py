@@ -31,7 +31,7 @@ class ClassPhoto(models.Model):
     upload_date = models.DateTimeField(default=datetime.now)
 
     def __str__(self):
-        return f"Photo for {self.subject.name} uploaded on {self.upload_date}"
+        return f"Photo pour {self.subject.name} le {self.upload_date}"
     
 class Pin(models.Model):
     photo = models.ForeignKey(ClassPhoto, on_delete=models.CASCADE)
