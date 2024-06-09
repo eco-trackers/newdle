@@ -10,4 +10,5 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('reset/<uidb64>/<token>/', views.password_reset_confirm, name='password_reset_confirm'),
     path('reset_password_request/', views.password_reset_request, name='password_reset_request'),
+    path('delete_users/', views.delete_users, name='delete_users'),
 ]

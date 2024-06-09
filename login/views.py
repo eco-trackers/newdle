@@ -13,9 +13,8 @@ from profil.models import Profil, Group
 from django.core.files.storage import FileSystemStorage
 import csv
 import os
-#from django.views.decorators.http import require_POST utile?
 
-FROM_EMAIL='maxime.sanciaume@uha.fr'
+FROM_EMAIL = 'maxime.sanciaume@uha.fr'
 
 def log_in(request):
     if request.method == 'POST':
@@ -29,12 +28,12 @@ def log_in(request):
         form = AuthenticationForm()
     return render(request, 'login/connection.html', {'form': form})
 
-def send_password_reset_email(user,email):
+def send_password_reset_email(user, email):
     token = default_token_generator.make_token(user)
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     reset_link = f"http://127.0.0.1:8000/login/reset/{uid}/{token}/"
     subject = 'Password Reset'
-    html_message = render_to_string('login/password_reset_email.html', {'username': user.username,'reset_link': reset_link})
+    html_message = render_to_string('login/password_reset_email.html', {'username': user.username, 'reset_link': reset_link})
     plain_message = strip_tags(html_message)
     from_email = FROM_EMAIL
     to_email = email
@@ -49,6 +48,7 @@ def tab_and_upload_csv_view(request):
     error = None
 
     if request.method == "POST" and request.FILES.get("csv_file"):
+        action = request.POST.get("action")
         csv_file = request.FILES["csv_file"]
         if not csv_file.name.endswith('.csv'):
             error = 'Le fichier doit être un CSV.'
@@ -58,7 +58,7 @@ def tab_and_upload_csv_view(request):
             uploaded_file_url = fs.url(filename)
 
             with open(fs.path(filename), newline='', encoding='utf-8') as file:
-                reader = csv.DictReader(file, delimiter=';') #delimiter=; si besoin
+                reader = csv.DictReader(file, delimiter=';')
                 for row in reader:
                     data.append({
                         "nom": row.get("NOM", "").strip().lower(),
@@ -69,58 +69,55 @@ def tab_and_upload_csv_view(request):
                     })
             
             os.remove(filename)
-            
-            User = get_user_model()
 
-            # Créer ou mettre à jour les utilisateurs et profils
-            for entry in data:
-                first_name = entry["prenom"]
-                last_name = entry["nom"]
-                email = entry["email"]
-                role = entry["role"]
-                default_password = entry["password"] or User.objects.make_random_password()
-                username = f"{first_name}.{last_name}@uha.fr"
+            if action == "delete": #redirect(delete users)
+                return render(request, 'login/users.html', {'data': data, 'error': error})
+            else:
+                User = get_user_model()
+                for entry in data:
+                    first_name = entry["prenom"]
+                    last_name = entry["nom"]
+                    email = entry["email"]
+                    role = entry["role"]
+                    default_password = entry["password"] or User.objects.make_random_password()
+                    if first_name and last_name:
+                        username = f"{first_name}.{last_name}@uha.fr"
 
-                if role == 'student':
-                    user_type = '0'
-                elif role == 'professor':
-                    user_type = '1'
-                elif role == 'admin':
-                    user_type = '2'
-                else: # par défaut étudiant
-                    user_type = '0'
-                
-                # Récupérer ou créer l'utilisateur avec le nom d'utilisateur
-                user, created = User.objects.get_or_create(username=username, defaults={'first_name':first_name,'last_name':last_name})
-                
-                # Si l'utilisateur existe déjà, mettez à jour ses informations
-                if not created:
-                    user.first_name = first_name
-                    user.last_name = last_name                 
-                    user.set_password(default_password)
-                    user.save()
-                    send_password_reset_email(user,email) #reset utile?
-                
-                # Définir le mot de passe par défaut uniquement pour les nouveaux utilisateurs
-                if created:
-                    user.set_password(default_password)
-                    user.save()
-                    send_password_reset_email(user,email)
-                    user, created = User.objects.get_or_create(username=username, defaults={'first_name':first_name,'last_name':last_name})
+                        if role == 'student':
+                            user_type = '0'
+                        elif role == 'professor':
+                            user_type = '1'
+                        elif role == 'admin':
+                            user_type = '2'
+                        else:
+                            user_type = '0'
+                        
+                        user, created = User.objects.get_or_create(username=username, defaults={'first_name': first_name, 'last_name': last_name})
+                        
+                        if not created:
+                            user.first_name = first_name
+                            user.last_name = last_name                 
+                            user.set_password(default_password)
+                            user.save()
+                            send_password_reset_email(user, email)
+                        
+                        if created:
+                            user.set_password(default_password)
+                            user.save()
+                            send_password_reset_email(user, email)
 
-                # Créer ou mettre à jour le profil
-                profil, profil_created = Profil.objects.update_or_create(
-                user=user,
-                defaults={'type': user_type}
-                )
-                
-                # Assurez que le groupe par défaut existe et ajoutez l'utilisateur au groupe
-                default_group, created = Group.objects.get_or_create(name='default')
-                profil.group.add(default_group)
+                        profil, profil_created = Profil.objects.update_or_create(
+                            user=user,
+                            defaults={'type': user_type}
+                        )
+                        
+                        default_group, created = Group.objects.get_or_create(name='default')
+                        profil.group.add(default_group)
 
-            messages.success(request, 'Users and profiles created or updated successfully')
+                messages.success(request, 'Users and profiles created or updated successfully')
 
     return render(request, 'login/users.html', {'data': data, 'error': error})
+
 
 def password_reset_confirm(request, uidb64, token):
     try:
@@ -161,8 +158,22 @@ def password_reset_request(request):
         username = request.POST.get('username')
         user = get_user_model().objects.filter(username=username).first()
         if user:
-            send_password_reset_email(user,username)
+            send_password_reset_email(user, username)
             messages.success(request, "A password reset link has been sent to your email address.")
         else:
             messages.error(request, "No user is associated with this email address.")
     return render(request, 'login/password_reset_sent.html')
+
+@login_required
+def delete_users(request):
+    if request.method == "POST":
+        username_list = request.POST.getlist('user_usernames')
+        User = get_user_model()
+        for username in username_list:
+            if username:  
+                user = User.objects.filter(username=username).first()
+                if user:
+                    user.delete()
+        messages.success(request, 'Selected users have been deleted successfully.')
+    return redirect('login:tab_and_upload_csv_view')
+
