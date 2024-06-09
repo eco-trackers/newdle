@@ -12,11 +12,10 @@ class UE(models.Model):
 
 class Subject(models.Model):
     name = models.CharField(max_length=50)
-    ue = models.ManyToManyField(to=UE)
+    ue = models.ForeignKey(UE,on_delete=models.CASCADE)
     prof = models.ManyToManyField(to=Profil)
     student_group = models.ManyToManyField(to=Group)
     coef = models.CharField(max_length=3)
 
-
     def __str__(self):
-        return self.name + '|' + str(self.ue) + '|'  + str(self.prof) +'|' + str(self.student_group)
+        return self.name
