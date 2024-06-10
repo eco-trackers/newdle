@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Page de connexion
+{% endblock %}
+
+{% block header %}
+<a class="navbar-brand" href="#">Newdle</a>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title text-center">se connecter</h3>
+            <form>
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" class="form-control" id="loginEmail" placeholder="email">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Mot de passe</label>
+                    <input type="password" class="form-control" id="loginPassword" placeholder="Mot de passe">
+                </div>
+                <button type="submit" class="btn btn-primary">se connecter</button>
+            </form>
+            <div class="text-center mt-3">
+                <a href="#" data-toggle="collapse" data-target="#signupForm">Vous n'avez pas de compte ? S'inscrire</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="signupForm" class="card collapse">
+        <div class="card-body">
+            <h3 class="card-title text-center">s'inscrire</h3>
+            <form>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" class="form-control" id="signupEmail" placeholder="email">
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Mot de passe</label>
+                    <input type="password" class="form-control" id="signupPassword" placeholder="Mot de passe">
+                </div>
+                <div class="form-group">
+                    <label for="signupPasswordConfirm">Confirmer Mot de passe</label>
+                    <input type="password" class="form-control" id="signupPasswordConfirm" placeholder="Confirmer Mot de passe">
+                </div>
+                <button type="submit" class="btn btn-primary">s'inscrire</button>
+            </form>
+            <div class="text-center mt-3">
+                <a href="#" data-toggle="collapse" data-target="#signupForm">Vous avez déjà un compte? Se connecter</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}
