@@ -7,7 +7,7 @@
     <title>{% block title %}Newdle{% endblock %}</title>
     {% load static %}
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -34,41 +34,17 @@
     </nav>
 
     <div class="container">
-
         {% block content %}
-        <h1>Entrez les notes ici :</h1>
-        
-        <form id="note-form" method='POST'>
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type='Submit' value='Save'/>
-        </form>
-       
+        <!-- Page-specific content will be inserted here -->
         {% endblock %}
     </div>
 
+
     <footer class="text-center py-3">
         <div class="container">
-            <p>Créé avec ❤️ NEWDLE</p>
+            <p>Crée avec ❤️ NEWDLE</p>
         </div>
     </footer>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Retain the selected value in the Matière field after form submission
-            const matiereField = document.getElementById("id_subject");
-            const savedValue = localStorage.getItem("savedMatiere");
-
-            if (savedValue) {
-                matiereField.value = savedValue;
-            }
-
-            const form = document.getElementById("note-form");
-            form.addEventListener("submit", function(event) {
-                localStorage.setItem("savedMatiere", matiereField.value);
-            });
-        });
-    </script>
 
 </body>
 
