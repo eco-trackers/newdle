@@ -1,7 +1,21 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
 body {
     background-color: #271f37;
     color: #ffffff;
     font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+main {
+    flex: 1;
 }
 
 .container {
@@ -19,9 +33,15 @@ body {
     padding: 20px;
 }
 
+
 .card-title {
     margin-bottom: 20px;
     font-weight: 300;
+}
+
+.table-primary {
+  background-color: purple;
+  color: white; /* Set the text color to white for better contrast */
 }
 
 .form-control {
