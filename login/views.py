@@ -111,7 +111,7 @@ def tab_and_upload_csv_view(request):
                             defaults={'type': user_type}
                         )
                         
-                        default_group, created = Group.objects.get_or_create(name='default')
+                        default_group, created = Group.objects.get_or_create(name='Default Group')
                         profil.group.add(default_group)
 
                 messages.success(request, 'Users and profiles created or updated successfully')
@@ -157,6 +157,7 @@ def password_reset_request(request):
             messages.warning(request, "You have been logged out to reset your password.")
         username = request.POST.get('username')
         user = get_user_model().objects.filter(username=username).first()
+        print(username)
         if user:
             send_password_reset_email(user, username)
             messages.success(request, "A password reset link has been sent to your email address.")
