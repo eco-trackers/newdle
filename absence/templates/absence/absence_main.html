@@ -1,107 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestion des Présences{% endblock %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Absence : {{ subject_id }}</title>
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #303030;">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a href="#" id="openBtn">
-            <span class="burger-icon">
-              <span></span>
-              <span></span>
-              <span></span>
-            </span>
-          </a>
-        </li>
-      
-      </ul>
+{% block styles %}<link rel="stylesheet" href="{% static 'absence/css/style.css' %}">{% endblock %}
+
+{% block content %}
+<main>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          {% if type == '0' %}
+          <h2>Mes absences</h2>
+          {% endif %}
+          {% if type >= '1' %}
+          <h2>Les absences</h2>
+          {% endif %}
+            {% for subject in subjects %}
+              <h2>
+                {{ subject.name }}
+                {% if type == '0' %}
+                <a href="/absence/{{ subject.name }}" class="btn btn-info mb-2">Entrer une absence</a>
+                {% elif type >= '1'  %}
+                <a href="{% url 'absence:absence' subject.name %}?details" class="btn btn-info mb-2">Voir le détails</a>
+                {% endif %}
+              </h2>
+            {% endfor %}
+        </div>
+      </div>
     </div>
-  </nav>
-
-  <div id="mySidenav" class="sidenav">
-    <a id="closeBtn" href="#" class="close"> x </a>
-    <ul>
-      <li><a href="#">Acceuil</a></li>
-      <li><a href="#">Absence</a></li>
-      <li><a href="#">Notes</a></li>
-      <li><a href="#">A propos</a></li>
-    </ul>
-  </div>
-
-  <div class="container d-flex flex-column align-items-center justify-content-center mt-5">
-    <div class="attendance p-4 mb-4 text-center bg-dark text-white rounded shadow">
-        <h2>Mes absences</h2>
-        <ul>
-          {% for subject in subjects %}
-          <li>
-              <h2>{{ subject.name }}</h2>
-              <a href="/absence/{{ subject.name }}">Entrer une absence</a>
-          </li>
-          {% endfor %}
-      </ul>
+    {% if type == '0' %}
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h2>Mes statistiques</h2>
+          <p> Nombre d'absence : {{ n_abs }} </p>
+          <p> Nombre de retard : {{ n_late }} </p>
+        </div>
+      </div>
     </div>
-</div>
-  <footer class="footer mt-auto py-2" style="background-color: #341142;">
-    <div class="container text-center">
-      <span class="text-white">Crée avec ❤️ Newdle</span>
-    </div>
-  </footer>
+    {% endif %}
+</main>
+{% endblock %}
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script>
-    const presentButton = document.getElementById('present');
-    const absentButton = document.getElementById('absent');
-    const lateButton = document.getElementById('late');
-
-    const presentCount = document.getElementById('present-count');
-    const absentCount = document.getElementById('absent-count');
-    const lateCount = document.getElementById('late-count');
-
-    let present = 0;
-    let absent = 0;
-    let late = 0;
-
-    presentButton.addEventListener('click', () => {
-      present++;
-      presentCount.textContent = present;
-    });
-
-    absentButton.addEventListener('click', () => {
-      absent++;
-      absentCount.textContent = absent;
-    });
-
-    lateButton.addEventListener('click', () => {
-      late++;
-      lateCount.textContent = late;
-    });
-
-    // Sidenav script
-    const sidenav = document.getElementById("mySidenav");
-    const openBtn = document.getElementById("openBtn");
-    const closeBtn = document.getElementById("closeBtn");
-
-    openBtn.onclick = function() {
-      sidenav.classList.add("active");
-    }
-
-    closeBtn.onclick = function() {
-      sidenav.classList.remove("active");
-    }
-  </script>
-</body>
-</html>
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}

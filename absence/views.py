@@ -41,7 +41,7 @@ class AbsenceView(View):
                 return render(request, 'absence/absence.html', {'mode': 'details', 'absences': absences, 'level': int(Profil.objects.get(user=request.user).type), 'subject_id': id })
             else:
                 form = AbsenceForm()
-                return render(request, 'absence/absence.html', {'mode': 'input', 'form': form})
+                return render(request, 'absence/absence.html', {'mode': 'input', 'form': form, 'level': int(Profil.objects.get(user=request.user).type)})
         elif (user.type == '1' and is_prof(subject.name, user.id)) or user.type == '2' :
             if id is None or 'details' in request.GET:
                 absences = Absence.objects.filter(subject=Subject.objects.get(name=id)).order_by('-date')
@@ -78,13 +78,17 @@ class AbsenceView(View):
         if user.type == '0' and user.group.name == student_group.name :
             form = AbsenceForm(request.POST)
             now = datetime.now()
+            start_time = now - timedelta(hours=2)
+            end_time = now + timedelta(hours=2)
             if form.is_valid():
-                absence = form.save(commit=False)
-                absence.student = Profil.objects.get(user=request.user)
-                absence.subject = Subject.objects.get(name=id)
-                absence.date = now
-                absence.save()
-                return redirect(f"{reverse('absence:absence', kwargs={'id': id})}?details")  
+                if not Absence.objects.filter(student=user.id, subject = subject.id, date__range=(start_time, end_time)).exists():
+                    absence = form.save(commit=False)
+                    absence.student = Profil.objects.get(user=request.user)
+                    absence.subject = Subject.objects.get(name=id)
+                    absence.date = now
+                    absence.save()
+                return redirect(f"{reverse('absence:absence', kwargs={'id': id})}?details")
+                      
             return render(request, 'absence/absence.html', {'mode': 'input', 'form': form})
         elif (user.type == '1' and is_prof(subject.name, user.id)) or user.type == '2' :
             subject = Subject.objects.get(name=id)    
@@ -96,13 +100,16 @@ class AbsenceView(View):
                     students = Profil.objects.filter(group__in=student_groups)
                     for student in students:
                         status = form.cleaned_data[f'student_{student.id}']
-                        absence = Absence.objects.create(
-                            student=student,
-                            subject=subject,
-                            status=status,
-                            date=attendance_date
-                        )
-                        absence.save() 
+                        start_time = attendance_date - timedelta(hours=2)
+                        end_time = attendance_date + timedelta(hours=2)
+                        if not Absence.objects.filter(student=student, subject = subject.id, date__range=(start_time, end_time)).exists():
+                            absence = Absence.objects.create(
+                                student=student,
+                                subject=subject,
+                                status=status,
+                                date=attendance_date
+                            )
+                            absence.save() 
                     return redirect(f"{reverse('absence:absence', kwargs={'id': id})}?details")
                 return render(request, 'absence/absence.html', {'mode': 'attendance', 'form': form})
             else :      
@@ -160,7 +167,7 @@ def upload_photo_view(request,id):
                 return redirect(reverse('absence:absence', kwargs={'id': id}) + '?details')
         else:
             form = PhotoUploadForm()
-        return render(request, 'absence/upload_photo.html', {'form': form})
+        return render(request, 'absence/upload_photo.html', {'form': form, 'id': id})
     else :
         return redirect(reverse('absence:absence', kwargs={'id': id}) + '?details')
 
@@ -226,7 +233,7 @@ def get_subjects(profil_id):
         return subjects
 def get_subjects_prof(profil_id):
         user = Profil.objects.get(id=profil_id)
-        subjects =  Subject.objects.filter(prof = user.id).distinc()
+        subjects =  Subject.objects.filter(prof = user.id).distinct()
         return subjects
       
 @login_required
@@ -234,15 +241,18 @@ def absence_main(request):
     user = Profil.objects.get(user=request.user)
     type = user.type
     match type:
-        case 0:
+        case '0':
             subjects = get_subjects(user.id)
-        case 1:
+        case '1':
             subjects = get_subjects_prof(user.id)
-        case 2:
+        case '2':
             subjects = Subject.objects.all()
-
-
-    return render(request, 'absence/absence_main.html', {'subjects':subjects, 'type':type})
+    n_abs = None
+    n_late = None
+    if type == '0':
+        n_abs = Absence.objects.filter(student=user.id, status = '0').count()
+        n_late = Absence.objects.filter(student=user.id, status = '2').count()
+    return render(request, 'absence/absence_main.html', {'subjects':subjects, 'type':type, 'n_abs':n_abs, 'n_late':n_late})
 
 @login_required
 def check_photo(request,id):
@@ -254,20 +264,29 @@ def check_photo(request,id):
         selected_photo_id = request.GET.get('photo')
         selected_photo = None
         pins = []
-
+        n_pin = None
+        n_absence = None
 
         photos = ClassPhoto.objects.filter(subject=subject).order_by('-upload_date')
     
-    
+        
         if selected_photo_id:
             selected_photo = get_object_or_404(ClassPhoto, pk=selected_photo_id, subject=subject)
             pins = Pin.objects.filter(photo=selected_photo)
-        
+            start_time = selected_photo.upload_date - timedelta(hours=2)
+            end_time = selected_photo.upload_date + timedelta(hours=2)
+
+
+            n_absence = Absence.objects.filter(subject=subject, date__range=(start_time, end_time)).count()
+            n_pin = Pin.objects.filter(photo=selected_photo).count()
         return render(request, 'absence/check_photo.html', {
             'photos': photos,
             'selected_photo': selected_photo,
             'pins': pins,
-            'subject': subject
+            'subject': subject,
+            'n_pin': n_pin,
+            'n_absence' : n_absence
+            
         })
     else :
         return redirect(reverse('absence:absence', kwargs={'id': id}) + '?details')
@@ -288,3 +307,16 @@ def mark_presence_delete(request, id):
 
     # Rediriger vers la page d'origine si la requête n'est pas POST ou si l'ID du pin est manquant
     return HttpResponseRedirect(reverse('absence:mark_presence', kwargs={'id': id}))
+
+@login_required
+def photo_delete(request, id):
+    if request.method == 'POST':
+        photo_id = request.POST.get('photo_id')
+        print(f"Received p_id: {photo_id}")
+        if photo_id:
+            photo = get_object_or_404(ClassPhoto, pk=photo_id)
+            photo.delete()
+            return HttpResponseRedirect(reverse('absence:check_photo', kwargs={'id': id}))
+
+    # Rediriger vers la page d'origine si la requête n'est pas POST ou si l'ID du pin est manquant
+    return HttpResponseRedirect(reverse('absence:check_photo', kwargs={'id': id}))

@@ -1,87 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}{{ subject.name }} : Absences{% endblock %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Absence : {{ subject_id }}</title>
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <link rel="stylesheet" href="{% static 'absence/css/style.css' %}">
-</head>
-<body>
-  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #303030;">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a href="#" id="openBtn">
-            <span class="burger-icon">
-              <span></span>
-              <span></span>
-              <span></span>
-            </span>
-          </a>
-        </li>
-      
-      </ul>
-    </div>
-  </nav>
+{% block styles %}<link rel="stylesheet" href="{% static 'absence/css/style.css' %}">{% endblock %}
+{% block content %}
+<main>
+  <div class="card">
+    <div class="card-body">
+      <h2>Vérification Appel</h2>
+      <form method="get">
+          {% csrf_token %}
+         <div class="form-group">
+              <label for="photo-select">Choisir une date</label>
+              <select id="photo-select" class="form-select-bg" name="photo" onchange="this.form.submit()">
+                  <option value="">-----------</option>
+                  {% for photo in photos %}
+                  <option value="{{ photo.id }}" {% if selected_photo and selected_photo.id == photo.id %}selected{% endif %}>
+                      {{ photo.upload_date|date:"d M Y H:i" }}
+                    </option>
+                  {% endfor %}
+              </select>
+          </div>
+      </form>
 
-  <div id="mySidenav" class="sidenav">
-    <a id="closeBtn" href="#" class="close"> x </a>
-    <ul>
-      <li><a href="#">Acceuil</a></li>
-      <li><a href="#">Absence</a></li>
-      <li><a href="#">Notes</a></li>
-      <li><a href="#">A propos</a></li>
-    </ul>
-  </div>
-  <div class="container">
-    <h2>Vision Professeur</h2>
-    <form method="get">
+      {% if selected_photo %}
+      <div id="photo-container">
+          <img id="photo" src="{{ selected_photo.photo.url }}" alt="Class Photo">
+          {% for pin in pins %}
+          <div class="pin-c" data-x="{{ pin.x }}" data-y="{{ pin.y }}" style="left: {{ pin.x }}%; top: {{ pin.y }}%;" title="Pin de {{ pin.user }}">
+            {{ pin.user }}
+          </div>
+          {% endfor %}
+      </div>
+      <div>
+        <p class="h5 text-center"> Nombre d'absence : {{ n_absence }}, Nombre de pins : {{ n_pin }}</p>
+      </div>
+      <form action="{% url 'absence:photo_delete' subject %}" method="post" class="d-inline">
         {% csrf_token %}
-        <div class="form-group">
-            <label for="photo-select">Choisir une photo</label>
-            <select id="photo-select" class="form-control" name="photo" onchange="this.form.submit()">
-                <option value="">Sélectionner une photo</option>
-                {% for photo in photos %}
-                <option value="{{ photo.id }}" {% if selected_photo and selected_photo.id == photo.id %}selected{% endif %}>
-                    {{ photo.upload_date|date:"d M Y H:i" }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-    </form>
-
-    {% if selected_photo %}
-    <div id="photo-container">
-        <img id="photo" src="{{ selected_photo.photo.url }}" alt="Class Photo">
-        {% for pin in pins %}
-        <div class="pin-c" data-x="{{ pin.x }}" data-y="{{ pin.y }}" style="left: {{ pin.x }}%; top: {{ pin.y }}%;" title="Pin de {{ pin.user }}">
-          {{ pin.user }} <!-- Display the name of the person -->
-        </div>
-        {% endfor %}
+        <input type="hidden" name="photo_id" value="{{ selected_photo.id }}">
+        <button type="submit" class="btn btn-success">Confirmer l'appel </button>
+      </form>
+      {% else %}
+      <p>Aucune photo sélectionnée.</p>
+      {% endif %}
     </div>
-    {% else %}
-    <p>Aucune photo sélectionnée.</p>
-    {% endif %}
-</div>
-  
-  <footer class="footer mt-auto py-2" style="background-color: #341142;">
-    <div class="container text-center">
-      <span class="text-white">Crée avec ❤️ Newdle</span>
-    </div>
-  </footer>
+    <a href="{% url 'absence:absence' subject %}?details" class="btn btn-primary mb-2">Voir le détails des absences</a>
+  </div>
+</main>
+{% endblock %}
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="{% static 'absence/js/check.js' %}"></script>
-
-
-</body>
-</html>
+{% block scripts %}
+<script src="{% static 'absence/js/pin.js' %}"></script>
+{% endblock %}
