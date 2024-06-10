@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Absences : {{ subject_id }} {% endblock %}
+{% block title %} {{ subject_id }} : Absences {% endblock %}
 {% load static %}
 {% block styles %}<link rel="stylesheet" href="{% static 'absence/css/style.css' %}">{% endblock %}
 
@@ -8,7 +8,11 @@
 <main>
     <div class="container my-5">
         <div class="row">
+            {% if level == 0  and mode == 'details' %}
+            <div class="col-md-4">
+            {% else %}
             <div class="col-md-7">
+            {% endif %}
                 {% if mode == 'input' %}
                     <div class="card">
                     <div class="card-body">
@@ -109,12 +113,12 @@
                                 {% if level >= 1 %}
                                 <td>{{ absence.student}}
                                 <td>
+                                    <a href="{% url 'absence:absence_edit' id=absence.id %}" class="btn btn-warning mb-1">Modifier</a>
                                     <form method="post" action="{% url 'absence:absence_delete' id=absence.subject.name %}">
                                         {% csrf_token %}
                                         <input type="hidden" name="absence_id" value="{{ absence.id }}">
-                                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                                        <button type="submit" class="btn btn-danger mb-2">Supprimer</button>
                                     </form>
-                                    <a href="{% url 'absence:absence_edit' id=absence.id %}" class="btn btn-warning">Modifier</a>
                                 </td>
                                 {% endif %}
                             </tr>
@@ -150,10 +154,16 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-body">
+                {% if not mode == 'details' %}
                 <a href="?details" class="btn btn-primary mb-2">Voir le détails des absences</a>
+                {% endif %}
+                {% if not mode == 'input' %}
                 <a href="?" class="btn btn-primary mb-2">Saisir une absence</a>
+                {% endif %}
                 {% if level >= 1 %}
+                {% if not mode == 'attendance' %}
                 <a href="?attendance" class="btn btn-primary mb-2">Faire l'appel</a>
+                {% endif %}
                 <a href="upload_photo" class="btn btn-primary mb-2">Activer la vérification de présence</a>
                 <a href="check_photo" class="btn btn-primary mb-2">Vérifier la présence</a>
                 {% endif %}

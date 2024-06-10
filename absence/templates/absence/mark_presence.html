@@ -36,11 +36,11 @@
         <div class="container">
           <h2>Vous avez déja équiter votre présence</h2>
         </div>
-          <a href="{% url 'absence:absence' subject %}?details" class="btn btn-secondary">Retour</a>
+          <a href="{% url 'absence:absence' subject %}?details" class="btn btn-secondary mb-2">Retour</a>
           <form action="{% url 'absence:mark_presence_delete' subject %}" method="post" class="d-inline">
             {% csrf_token %}
             <input type="hidden" name="pin_id" value="{{ user_pin_id }}">
-            <button type="submit" class="btn btn-secondary">Annuler mon équitete</button>
+            <button type="submit" class="btn btn-danger mb-2">Annuler mon équitete</button>
           </form>
         </div>
       {% endif %}

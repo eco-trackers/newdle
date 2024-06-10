@@ -41,7 +41,7 @@ class AbsenceView(View):
                 return render(request, 'absence/absence.html', {'mode': 'details', 'absences': absences, 'level': int(Profil.objects.get(user=request.user).type), 'subject_id': id })
             else:
                 form = AbsenceForm()
-                return render(request, 'absence/absence.html', {'mode': 'input', 'form': form})
+                return render(request, 'absence/absence.html', {'mode': 'input', 'form': form, 'level': int(Profil.objects.get(user=request.user).type)})
         elif (user.type == '1' and is_prof(subject.name, user.id)) or user.type == '2' :
             if id is None or 'details' in request.GET:
                 absences = Absence.objects.filter(subject=Subject.objects.get(name=id)).order_by('-date')
@@ -78,13 +78,17 @@ class AbsenceView(View):
         if user.type == '0' and user.group.name == student_group.name :
             form = AbsenceForm(request.POST)
             now = datetime.now()
+            start_time = now - timedelta(hours=2)
+            end_time = now + timedelta(hours=2)
             if form.is_valid():
-                absence = form.save(commit=False)
-                absence.student = Profil.objects.get(user=request.user)
-                absence.subject = Subject.objects.get(name=id)
-                absence.date = now
-                absence.save()
-                return redirect(f"{reverse('absence:absence', kwargs={'id': id})}?details")  
+                if not Absence.objects.filter(student=user.id, subject = subject.id, date__range=(start_time, end_time)).exists():
+                    absence = form.save(commit=False)
+                    absence.student = Profil.objects.get(user=request.user)
+                    absence.subject = Subject.objects.get(name=id)
+                    absence.date = now
+                    absence.save()
+                return redirect(f"{reverse('absence:absence', kwargs={'id': id})}?details")
+                      
             return render(request, 'absence/absence.html', {'mode': 'input', 'form': form})
         elif (user.type == '1' and is_prof(subject.name, user.id)) or user.type == '2' :
             subject = Subject.objects.get(name=id)    
@@ -96,13 +100,16 @@ class AbsenceView(View):
                     students = Profil.objects.filter(group__in=student_groups)
                     for student in students:
                         status = form.cleaned_data[f'student_{student.id}']
-                        absence = Absence.objects.create(
-                            student=student,
-                            subject=subject,
-                            status=status,
-                            date=attendance_date
-                        )
-                        absence.save() 
+                        start_time = attendance_date - timedelta(hours=2)
+                        end_time = attendance_date + timedelta(hours=2)
+                        if not Absence.objects.filter(student=student, subject = subject.id, date__range=(start_time, end_time)).exists():
+                            absence = Absence.objects.create(
+                                student=student,
+                                subject=subject,
+                                status=status,
+                                date=attendance_date
+                            )
+                            absence.save() 
                     return redirect(f"{reverse('absence:absence', kwargs={'id': id})}?details")
                 return render(request, 'absence/absence.html', {'mode': 'attendance', 'form': form})
             else :      
