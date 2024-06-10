@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+    <title>Subject Detail</title>
+    <h2>Connected as: {{ request.user.email }} <br> user level: {{ request.user.profil.type }}</h2>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+    <h1>{{ subject_name }}</h1>
+    <h5>UE: {{ subject_ue }}</h5>
+    <h5>coeff: {{ subject_coef }}</h5>
+    <h5>teachers:
+        <ul>{% for p in subject_prof %}
+            <li>{{ p.user.first_name }} - {{ p.user.last_name }} - {{ p.user.email }}</li>
+            {% endfor %}
+        </ul>
+    </h5>
+    <h5>student groups:
+        <ul>{% for g in subject_student_group %}
+            <li>{{ g.name }}</li>
+            {% endfor %}
+        </ul>
+    </h5>
+
+    {% if request.user.profil.type == '1' or request.user.profil.type == '2' %}
+    <a href="{% url 'subjects-edit-view' subject_id=subject_id %}">edit</a>
+    {% endif %}
+
+    {% if request.user.profil.type == '2' %}
+    <a href="{% url 'subjects-delete-view' subject_id=subject_id %}">delete</a>
+    {% endif %}
+
+</body>
+
+
+
+
+</html>

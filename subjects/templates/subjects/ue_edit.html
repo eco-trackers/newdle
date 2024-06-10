@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit UE</title>
+</head>
+<body>
+    <h1>Edit UE</h1>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="{{ ue.name }}" required><br><br>
+        
+        <label for="semester">Semester:</label>
+        <input type="text" id="semester" name="semester" value="{{ ue.semester }}" required></input><br><br>
+        
+        <label for="coef">coef:</label>
+        <input type="number" id="coef" name="coef" value="{{ ue.coef }}"  required><br><br>
+        
+        <input type="submit" value="Update ue">
+    </form>
+</body>
+</html>

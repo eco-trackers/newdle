@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+    <title>Ue Detail</title>
+    <h2>Connected as: {{ request.user.email }} <br> user level: {{ request.user.profil.type }}</h2>
+</head>
+
+<body>
+    <h1>{{ ue.name }}</h1>
+    <h5>coef: {{ ue.coef }}</h5>
+    <h5>semester: {{ ue.semester }}</h5>
+
+    <a href="{% url 'ue-edit-view' ue_id=ue.id%}">edit</a>
+
+    <a href="{% url 'ue-delete-view' ue_id=ue.id %}">delete</a>
+
+</body>
+
+
+
+
+</html>
