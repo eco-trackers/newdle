@@ -7,28 +7,7 @@
   <title>Absence : {{ subject }}</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <style>
-    #photo-container {
-        position: relative;
-        display: inline-block;
-        max-width: 100%; /* Limite la largeur maximale à 100% du conteneur parent */
-        height: auto; /* Permet de maintenir le ratio de l'image */
-    }
-    #photo {
-        width: 100%; /* Adapte la photo à la largeur du conteneur */
-        max-height: 500px; /* Définit une hauteur maximale */
-        object-fit: contain; /* Assure que l'image garde son aspect ratio */
-    }
-    .pin {
-        position: absolute;
-        width: 20px;
-        height: 20px;
-        background-color: red;
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        cursor: pointer; /* Change le curseur pour indiquer que c'est interactif */
-    }
-</style>
+  <link rel="stylesheet" href="{% static 'absence/css/style.css' %}">
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #303030;">
@@ -93,6 +72,7 @@
     <a href="{% url 'absence:absence' subject %}?details" class="btn btn-secondary">Retour</a>
     <form action="{% url 'absence:mark_presence_delete' subject %}" method="post" class="d-inline">
       {% csrf_token %}
+      <input type="hidden" name="pin_id" value="{{ user_pin_id }}">
       <button type="submit" class="btn btn-secondary">Annuler mon équitete</button>
   </form>
   </div>
@@ -115,41 +95,7 @@
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-  
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const image = document.getElementById('photo');
-        const photoContainer = document.getElementById('photo-container');
-
-        photoContainer.addEventListener('click', function(event) {
-            const rect = photoContainer.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            const normalizedX = x / rect.width;
-            const normalizedY = y / rect.height;
-
-            fetch('', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: `x=${normalizedX}&y=${normalizedY}`
-            }).then(response => response.json())
-            .then(data => {
-                if (data.status === 'ok') {
-                    const pin = document.createElement('div');
-                    pin.className = 'pin';
-                    pin.style.left = `${normalizedX * 100}%`;
-                    pin.style.top = `${normalizedY * 100}%`;
-                    photoContainer.appendChild(pin);
-                }
-            });
-        });
-
-        
-    });
-</script>
+  <script src="{% static 'absence/js/pin.js' %}"></script>
   
 </body>
 </html>

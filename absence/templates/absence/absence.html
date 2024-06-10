@@ -128,8 +128,8 @@
                 <tr>
                     <th>Date</th>
                     <th>Statut</th>
-                    <th>Etudiant</th>
                     {% if level >= 1 %}
+                    <th>Etudiant</th>
                     <th>Actions</th>
                     {% endif %}
                 </tr>
@@ -139,8 +139,8 @@
                     <tr>
                         <td>{{ absence.date|date:"Y-m-d" }} {{ absence.date|time:"H:i" }}</td>
                         <td>{{ absence.get_status_display }}</td>
-                        <td>{{ absence.student}}
                         {% if level >= 1 %}
+                        <td>{{ absence.student}}
                         <td>
                             <form method="post" action="{% url 'absence:absence_delete' id=absence.subject.name %}">
                                 {% csrf_token %}
