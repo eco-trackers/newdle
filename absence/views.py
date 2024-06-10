@@ -1,13 +1,14 @@
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views import View
 from django.urls import reverse
 from profil.models import Profil
 from subjects.models import Subject
-from .models import Absence
-from .forms import AbsenceForm, AbsenceFormT, AttendanceForm, EditAbsenceForm
+from .models import Absence, ClassPhoto, Pin
+from .forms import AbsenceForm, AbsenceFormT, AttendanceForm, DateForm, EditAbsenceForm, PhotoUploadForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.core.paginator import Paginator
 # Create your views here.
 
@@ -121,7 +122,7 @@ class AbsenceView(View):
 def index_view(request):
     return render(request, 'index.html')
 
-
+@login_required
 def delete_absence(request, id):
     if request.method == 'POST':
         absence_id = request.POST.get('absence_id')
@@ -130,6 +131,8 @@ def delete_absence(request, id):
             absence.delete()
     return redirect(f"{reverse('absence:absence', kwargs={'id': id})}?details") 
 
+
+@login_required
 def edit_absence(request, id):
     absence = get_object_or_404(Absence, id=id)
     if request.method == 'POST':
@@ -140,3 +143,148 @@ def edit_absence(request, id):
     else:
         form = EditAbsenceForm(instance=absence)
     return render(request, 'absence/edit_absence.html', {'form': form, 'absence': absence})
+
+
+@login_required
+def upload_photo_view(request,id):
+    subject = get_object_or_404(Subject, name=id)
+    user = Profil.objects.get(user=request.user)
+    if is_prof(subject.name, user.id) or user.type == '2':
+        
+        if request.method == 'POST':
+            form = PhotoUploadForm(request.POST, request.FILES)
+            if form.is_valid():
+                photo = form.save(commit=False)
+                photo.subject = Subject.objects.get(name=id)
+                photo.save()
+                return redirect(reverse('absence:absence', kwargs={'id': id}) + '?details')
+        else:
+            form = PhotoUploadForm()
+        return render(request, 'absence/upload_photo.html', {'form': form})
+    else :
+        return redirect(reverse('absence:absence', kwargs={'id': id}) + '?details')
+
+
+@login_required
+def mark_presence_view(request, id):
+    time_threshold = datetime.now() - timedelta(hours=2)
+    subject = Subject.objects.get(name=id)
+    user = Profil.objects.get(user=request.user)
+    
+    if user.type == '0':
+        selected_photo_id = request.GET.get('photo')
+        selected_photo = None
+        mode = 'npinned'
+        photos = ClassPhoto.objects.filter(subject=subject).order_by('-upload_date')
+    
+    
+        if selected_photo_id:
+            selected_photo = get_object_or_404(ClassPhoto, pk=selected_photo_id, subject=subject)
+            pins = Pin.objects.filter(photo=selected_photo)
+        
+        if Pin.objects.filter(photo=selected_photo, user=user).exists():
+            mode = 'pinned'
+    
+
+        if ClassPhoto.objects.filter(subject=subject.id).exists():
+            if request.method == 'POST':
+                try:
+                    x = float(request.POST['x']) * 100
+                    y = float(request.POST['y']) * 100
+                except ValueError:
+                    return JsonResponse({'status': 'error', 'message': 'Invalid coordinates.'})
+
+                if not Pin.objects.filter(photo=selected_photo, user=user).exists():
+                    pin = Pin(photo=selected_photo, user=user, x=x, y=y)
+                    pin.save()
+                    return JsonResponse({'status': 'ok', 'pin_id': pin.id})
+                else:
+                    return JsonResponse({'status': 'error', 'message': 'Vous avez déjà placé un pin.'})
+
+            pins = Pin.objects.filter(photo=selected_photo)
+            user_pin = pins.filter(user=user).first()
+            user_pin_data = None
+            user_pin_id = None
+            if user_pin:
+                user_pin_data = {
+                    'x': user_pin.x,
+                    'y': user_pin.y
+                }
+                user_pin_id = user_pin.id
+            return render(request, 'absence/mark_presence.html', { 'mode':mode,'subject':id, 'pins': pins,'user_pin': user_pin, 'user_pin_data': user_pin_data,'photos': photos,
+            'selected_photo': selected_photo, 'user_pin_id': user_pin_id})
+        else :
+            return render(request, 'absence/mark_presence.html', {'mode':'nophoto', 'subject':id})
+    else :
+        return redirect(reverse('absence:absence', kwargs={'id': id}) + '?details')
+    
+    
+def get_subjects(profil_id):
+        user = Profil.objects.get(id=profil_id)
+        groups = user.group.all()
+        subjects = Subject.objects.filter(student_group__in=groups).distinct()
+        return subjects
+def get_subjects_prof(profil_id):
+        user = Profil.objects.get(id=profil_id)
+        subjects =  Subject.objects.filter(prof = user.id).distinc()
+        return subjects
+      
+@login_required
+def absence_main(request):
+    user = Profil.objects.get(user=request.user)
+    type = user.type
+    match type:
+        case 0:
+            subjects = get_subjects(user.id)
+        case 1:
+            subjects = get_subjects_prof(user.id)
+        case 2:
+            subjects = Subject.objects.all()
+
+
+    return render(request, 'absence/absence_main.html', {'subjects':subjects, 'type':type})
+
+@login_required
+def check_photo(request,id):
+    subject = get_object_or_404(Subject, name=id)
+    user = Profil.objects.get(user=request.user)
+    
+    if is_prof(subject.name, user.id) or user.type == '2':
+        
+        selected_photo_id = request.GET.get('photo')
+        selected_photo = None
+        pins = []
+
+
+        photos = ClassPhoto.objects.filter(subject=subject).order_by('-upload_date')
+    
+    
+        if selected_photo_id:
+            selected_photo = get_object_or_404(ClassPhoto, pk=selected_photo_id, subject=subject)
+            pins = Pin.objects.filter(photo=selected_photo)
+        
+        return render(request, 'absence/check_photo.html', {
+            'photos': photos,
+            'selected_photo': selected_photo,
+            'pins': pins,
+            'subject': subject
+        })
+    else :
+        return redirect(reverse('absence:absence', kwargs={'id': id}) + '?details')
+
+@login_required
+def mark_presence_delete(request, id):
+    user = Profil.objects.get(user=request.user)
+    selected_photo_id = request.GET.get('photo')
+    subject = Subject.objects.get(name=id)
+
+    if request.method == 'POST':
+        pin_id = request.POST.get('pin_id')
+        print(f"Received pin_id: {pin_id}")
+        if pin_id:
+            pin = get_object_or_404(Pin, id=pin_id, user=user)
+            pin.delete()
+            return HttpResponseRedirect(reverse('absence:mark_presence', kwargs={'id': id}))
+
+    # Rediriger vers la page d'origine si la requête n'est pas POST ou si l'ID du pin est manquant
+    return HttpResponseRedirect(reverse('absence:mark_presence', kwargs={'id': id}))

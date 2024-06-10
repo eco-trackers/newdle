@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Absence : {{ subject }}</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'absence/css/style.css' %}">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #303030;">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a href="#" id="openBtn">
+            <span class="burger-icon">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </a>
+        </li>
+      
+      </ul>
+    </div>
+  </nav>
+
+  <div id="mySidenav" class="sidenav">
+    <a id="closeBtn" href="#" class="close"> x </a>
+    <ul>
+      <li><a href="#">Acceuil</a></li>
+      <li><a href="#">Absence</a></li>
+      <li><a href="#">Notes</a></li>
+      <li><a href="#">A propos</a></li>
+    </ul>
+  </div>
+  {% block mark %}
+  <h2>Marquer votre présence</h2>
+  <form method="get">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="photo-select">Choisir une photo</label>
+        <select id="photo-select" class="form-control" name="photo" onchange="this.form.submit()">
+            <option value="">Sélectionner une photo</option>
+            {% for photo in photos %}
+            <option value="{{ photo.id }}" {% if selected_photo and selected_photo.id == photo.id %}selected{% endif %}>
+                {{ photo.upload_date|date:"d M Y H:i" }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+</form>
+{% if mode == "npinned" %}
+  <div class="container">
+    <div id="photo-container">
+      <img id="photo" src="{{ selected_photo.photo.url }}" alt="Photo de la classe" class="img-fluid">
+      <!-- Pins will be inserted here by JavaScript -->
+  </div>
+    <a href="{% url 'absence:absence' subject %}?details" class="btn btn-secondary">Valider</a>
+  </div>
+{% endif %}
+{% if mode == "pinned" %}
+  <div class="container">
+    <h2>Vous avez déja équiter votre présence</h2>
+  </div>
+    <a href="{% url 'absence:absence' subject %}?details" class="btn btn-secondary">Retour</a>
+    <form action="{% url 'absence:mark_presence_delete' subject %}" method="post" class="d-inline">
+      {% csrf_token %}
+      <input type="hidden" name="pin_id" value="{{ user_pin_id }}">
+      <button type="submit" class="btn btn-secondary">Annuler mon équitete</button>
+  </form>
+  </div>
+{% endif %}
+
+{% endblock %}
+{% if mode == "nophoto" %}
+  {% block no %}
+  <h2>Désolé il n'y a pas encore de photo</h2>
+  <a href="{% url 'absence:absence' subject %}?details" class="btn btn-secondary">Retour au détail</a>
+  {% endblock %}
+{% endif %}
+
+  
+  <footer class="footer mt-auto py-2" style="background-color: #341142;">
+    <div class="container text-center">
+      <span class="text-white">Crée avec ❤️ Newdle</span>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="{% static 'absence/js/pin.js' %}"></script>
+  
+</body>
+</html>

@@ -1,7 +1,7 @@
 from django import forms
 
 from profil.models import Profil
-from .models import Absence
+from .models import Absence, ClassPhoto
 
 class AbsenceForm(forms.ModelForm):
     class Meta:
@@ -24,7 +24,7 @@ class AbsenceFormT(forms.ModelForm):
         model = Absence
         fields = ['date','student','status']
         widgets = {
-            'date': forms.DateTimeInput(format='%Y-%m-%d %H:%M:%S', attrs={'class':'datetimefield'}),
+            'date': forms.DateTimeInput(format='%Y-%m-%d %H:%M', attrs={'class':'datetimefield'}),
             'status': forms.RadioSelect(attrs={'class': 'form-check-input',  'type':'checkbox'}),
             'student': forms.Select(attrs={'class': 'form-control'}),
         }
@@ -51,7 +51,7 @@ class AttendanceForm(forms.ModelForm):
         model = Absence
         fields = ['date']
         widgets = {
-            'date': forms.DateTimeInput(format='%Y-%m-%d %H:%M:%S', attrs={'class':'datetimefield'}),
+            'date': forms.DateTimeInput(format='%Y-%m-%d %H:%M', attrs={'class':'datetimefield'}),
         }
         labels = {
             'date': 'Date et heure de l\'appel',
@@ -91,4 +91,19 @@ class EditAbsenceForm(forms.ModelForm):
         self.fields['status'].initial = '1'  
 
 
+class PhotoUploadForm(forms.ModelForm):
+    class Meta:
+        model = ClassPhoto
+        fields = ['photo']
+        widgets = {
+            'photo': forms.FileInput(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'photo': 'Téléverser une photo de la classe',
+        }
 
+class DateForm(forms.Form):
+    date = forms.DateTimeField(
+        widget=forms.DateTimeInput(format='%Y-%m-%d %H:%M', attrs={'class':'datetimefield'}),
+        label='Sélectionner la date et l\'heure'
+    )
