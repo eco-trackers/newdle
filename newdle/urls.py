@@ -25,5 +25,6 @@ urlpatterns = [
     path('absence/', include('absence.urls')),
     path('notes/',include('notes.urls')),
     path('profil/',include('profil.urls')),
-     path('', views.index, name='index'),
+    path('principal/',views.principal, name='principal'),
+    path('', views.index, name='index'),
 ]
