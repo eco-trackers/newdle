@@ -1,251 +1,175 @@
+{% extends 'base.html' %}
+
+{% block title %}Absences : {{ subject_id }} {% endblock %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Absence : {{ subject_id }}</title>
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #303030;">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a href="#" id="openBtn">
-            <span class="burger-icon">
-              <span></span>
-              <span></span>
-              <span></span>
-            </span>
-          </a>
-        </li>
-      
-      </ul>
-    </div>
-  </nav>
+{% block styles %}<link rel="stylesheet" href="{% static 'absence/css/style.css' %}">{% endblock %}
 
-  <div id="mySidenav" class="sidenav">
-    <a id="closeBtn" href="#" class="close"> x </a>
-    <ul>
-      <li><a href="#">Acceuil</a></li>
-      <li><a href="#">Absence</a></li>
-      <li><a href="#">Notes</a></li>
-      <li><a href="#">A propos</a></li>
-    </ul>
-  </div>
-
-  </div>
-  {% if mode == 'input' %}
-  <div class="container d-flex flex-column align-items-center justify-content-center mt-5">
-    <div class="attendance p-4 mb-4 text-center bg-dark text-white rounded shadow">
-        <h2>Saisir une absence</h2>
-        <form method="post">
-            {% csrf_token %}
-            {% if level >= 1 %}
-            <div class="form-group">
-                {{ form.date.label_tag }}
-                {{ form.date }}
-            </div>
-            <div class="form-group">
-                <label for="{{ form.student.id_for_label }}">Choisir un étudiant</label>
-                <select class="form-select" aria-label="Etudiant" name="{{ form.student.name }}">
-                    {% for student in form.student.field.queryset %}
-                        <option value="{{ student.pk }}" {% if form.student.value == student.pk %}selected{% endif %}>{{ student.user.username }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            {% endif %}
-            <div class="form-group">
-                {% for choice in form.status.field.choices %}
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" 
-                               name="{{ form.status.name }}" 
-                               id="{{ form.status.name }}_{{ forloop.counter }}" 
-                               value="{{ choice.0 }}" 
-                               {% if form.status.value == choice.0 %}checked{% endif %}>
-                        <label class="form-check-label" for="{{ form.status.name }}_{{ forloop.counter }}">
-                            {{ choice.1 }}
-                        </label>
+{% block content %}
+<main>
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-7">
+                {% if mode == 'input' %}
+                    <div class="card">
+                    <div class="card-body">
+                    <h2>Saisir une absence</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if level >= 1 %}
+                            <div class="form-group">
+                            {{ form.date.label_tag }}
+                            {{ form.date }}
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.student.id_for_label }}">Choisir un étudiant</label>
+                                <select class="form-select" aria-label="Etudiant" name="{{ form.student.name }}">
+                                {% for student in form.student.field.queryset %}
+                                    <option value="{{ student.pk }}" {% if form.student.value == student.pk %}selected{% endif %}>{{ student.user.username }}</option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                        {% endif %}
+                        <div class="form-group">
+                            {% for choice in form.status.field.choices %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" 
+                                    name="{{ form.status.name }}" 
+                                    id="{{ form.status.name }}_{{ forloop.counter }}" 
+                                    value="{{ choice.0 }}" 
+                                    {% if form.status.value == choice.0 %}checked{% endif %}>
+                                <label class="form-check-label" for="{{ form.status.name }}_{{ forloop.counter }}">
+                                    {{ choice.1 }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Envoyer</button>
+                    </form>        
                     </div>
-                {% endfor %}
-            </div>
-            <button type="submit" class="btn btn-primary">Envoyer</button>
-        </form>
-        
-    </div>
-</div>
-    {% elif mode == 'attendance' %}
-    <div class="container d-flex flex-column align-items-center justify-content-center mt-5">
-        <div class="attendance p-4 mb-4 text-center bg-dark text-white rounded shadow">
-            <h2>Faire l'Appel</h2>
-            <form method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    {{ form.date.label_tag }}
-                    {{ form.date }}
-                </div>
-                <div class="form-group">
-                    {% for field in form %}
-                        {% if field.name != 'date' %}
-                            <div>
-                                <label>{{ field.label }}</label>
-                                {% for choice in field.field.choices %}
+                    </div>
+                {% elif mode == 'attendance' %}
+                    <div class="card">
+                    <div class="card-body">
+                    <h2>Faire l'Appel</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{ form.date.label_tag }}
+                            {{ form.date }}
+                        </div>
+                        <div class="form-group">
+                            {% for field in form %}
+                            {% if field.name != 'date' %}
+                                <div>
+                                    <label>{{ field.label }}</label>
+                                    {% for choice in field.field.choices %}
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" 
-                                               name="{{ field.name }}" 
-                                               id="{{ field.name }}_{{ forloop.counter }}" 
-                                               value="{{ choice.0 }}" 
-                                               {% if field.value == choice.0 %}checked{% endif %}>
+                                           name="{{ field.name }}" 
+                                           id="{{ field.name }}_{{ forloop.counter }}" 
+                                           value="{{ choice.0 }}" 
+                                           {% if field.value == choice.0 %}checked{% endif %}>
                                         <label class="form-check-label" for="{{ field.name }}_{{ forloop.counter }}">
                                             {{ choice.1 }}
                                         </label>
                                     </div>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                <button type="submit" class="btn btn-primary">Envoyer</button>
-            </form>
-        </div>
-    </div>
-    {% elif mode == 'details' %}
-    <div class="container d-flex flex-column align-items-center justify-content-center mt-5">
-        <div class="attendance p-4 mb-4 text-center bg-dark text-white rounded shadow">
-            {% if level >= 1 %}
-            <h2>Absences pour {{ subject_id }}</h2>
-            {% else %}
-            <h2>Vos absences</h2>
-            {% endif %}
-        <table class="table table-dark">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Statut</th>
-                    {% if level >= 1 %}
-                    <th>Etudiant</th>
-                    <th>Actions</th>
-                    {% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for absence in absences %}
-                    <tr>
-                        <td>{{ absence.date|date:"Y-m-d" }} {{ absence.date|time:"H:i" }}</td>
-                        <td>{{ absence.get_status_display }}</td>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Envoyer</button>
+                    </form>
+                    </div>
+                    </div>
+                {% elif mode == 'details' %}
+                    <div class="card">
+                    <div class="card-body">
                         {% if level >= 1 %}
-                        <td>{{ absence.student}}
-                        <td>
-                            <form method="post" action="{% url 'absence:absence_delete' id=absence.subject.name %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="absence_id" value="{{ absence.id }}">
-                                <button type="submit" class="btn btn-danger">Supprimer</button>
-                            </form>
-                            <a href="{% url 'absence:absence_edit' id=absence.id %}" class="btn btn-warning">Modifier</a>
-                        </td>
+                        <h2>Absences pour {{ subject_id }}</h2>
+                        {% else %}
+                        <h2>Vos absences</h2>
                         {% endif %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <div>
-            <span>
-                {% if absences.has_previous %}
-                    <a href="?details&page=1" class="btn btn-dark">&laquo; première</a>
-                    <a href="?details&page={{ absences.previous_page_number }}" class="btn btn-dark">précédente</a>
-                {% endif %}
+                        <table class="card-body">
+                        <thead>
+                            <tr>
+                            <th>Date</th>
+                            <th>Statut</th>
+                            {% if level >= 1 %}
+                            <th>Etudiant</th>
+                            <th>Actions</th>
+                            {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for absence in absences %}
+                            <tr>
+                                <td>{{ absence.date|date:"Y-m-d" }} {{ absence.date|time:"H:i" }}</td>
+                                <td>{{ absence.get_status_display }}</td>
+                                {% if level >= 1 %}
+                                <td>{{ absence.student}}
+                                <td>
+                                    <form method="post" action="{% url 'absence:absence_delete' id=absence.subject.name %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="absence_id" value="{{ absence.id }}">
+                                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                                    </form>
+                                    <a href="{% url 'absence:absence_edit' id=absence.id %}" class="btn btn-warning">Modifier</a>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        </table>
+                        <span>
+                            {% if absences.has_previous %}
+                                <a href="?details&page=1" class="btn btn-dark">&laquo; première</a>
+                                <a href="?details&page={{ absences.previous_page_number }}" class="btn btn-dark">précédente</a>
+                            {% endif %}
   
-                <span>
-                    Page {{ absences.number }} sur {{ absences.paginator.num_pages }}.
-                </span>
+                        <span>
+                            Page {{ absences.number }} sur {{ absences.paginator.num_pages }}.
+                        </span>
   
-                {% if absences.has_next %}
-                    <a href="?details&page={{ absences.next_page_number }}" class="btn btn-dark" >suivante</a>
-                    <a href="?details&page={{ absences.paginator.num_pages }}" class="btn btn-dark">dernière &raquo;</a>
+                        {% if absences.has_next %}
+                            <a href="?details&page={{ absences.next_page_number }}" class="btn btn-dark" >suivante</a>
+                            <a href="?details&page={{ absences.paginator.num_pages }}" class="btn btn-dark">dernière &raquo;</a>
+                        {% endif %}
+                        </span>
+                    </div>
+                    </div>
+                {% elif mode == 'attendance' %}
+                    <h2>Faire l'Appel</h2>
+                    <form method="post"  class="form-check form-check-inline">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">Enregistrer l'Appel</button>
+                    </form>
                 {% endif %}
-            </span>
-        </div>
+            </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <a href="?details" class="btn btn-primary mb-2">Voir le détails des absences</a>
+                <a href="?" class="btn btn-primary mb-2">Saisir une absence</a>
+                {% if level >= 1 %}
+                <a href="?attendance" class="btn btn-primary mb-2">Faire l'appel</a>
+                <a href="upload_photo" class="btn btn-primary mb-2">Activer la vérification de présence</a>
+                <a href="check_photo" class="btn btn-primary mb-2">Vérifier la présence</a>
+                {% endif %}
+                {% if level == 0 %}
+                <a href="mark_presence" class="btn btn-primary mb-2">Vérifier ma présence</a>
+                {% endif %}
+            </div>
         </div>
     </div>
-        
-    {% elif mode == 'attendance' %}
-        <h2>Faire l'Appel</h2>
-        <form method="post"  class="form-check form-check-inline">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Enregistrer l'Appel</button>
-        </form>
-    {% endif %}
-    <div class="container d-flex flex-column align-items-center justify-content-center mt-5">
-        <div class="attendance p-4 mb-4 text-center bg-dark text-white rounded shadow">
-            <a href="?details" class="btn btn-primary">Voir le détails des absences</a>
-            <a href="?" class="btn btn-primary">Saisir une absence</a>
-            {% if level >= 1 %}
-            <a href="?attendance" class="btn btn-primary">Faire l'appel</a>
-            <a href="upload_photo" class="btn btn-primary">Absence v2</a>
-            <a href="check_photo" class="btn btn-primary">check Absence v2</a>
-            {% endif %}
-            {% if level == 0 %}
-            <a href="mark_presence" class="btn btn-primary">Absence v2</a>
-            {% endif %}
-        </div>
-    </div>
-    <footer class="text-center py-3">
-        <div class="container">
-            <p>Crée avec ❤️ NEWDLE</p>
-        </div>
-    </footer>
+</div>
+</div>
+</main>
+{% endblock %}
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script>
-    const presentButton = document.getElementById('present');
-    const absentButton = document.getElementById('absent');
-    const lateButton = document.getElementById('late');
-
-    const presentCount = document.getElementById('present-count');
-    const absentCount = document.getElementById('absent-count');
-    const lateCount = document.getElementById('late-count');
-
-    let present = 0;
-    let absent = 0;
-    let late = 0;
-
-    presentButton.addEventListener('click', () => {
-      present++;
-      presentCount.textContent = present;
-    });
-
-    absentButton.addEventListener('click', () => {
-      absent++;
-      absentCount.textContent = absent;
-    });
-
-    lateButton.addEventListener('click', () => {
-      late++;
-      lateCount.textContent = late;
-    });
-
-    // Sidenav script
-    const sidenav = document.getElementById("mySidenav");
-    const openBtn = document.getElementById("openBtn");
-    const closeBtn = document.getElementById("closeBtn");
-
-    openBtn.onclick = function() {
-      sidenav.classList.add("active");
-    }
-
-    closeBtn.onclick = function() {
-      sidenav.classList.remove("active");
-    }
-  </script>
-</body>
-</html>
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}
