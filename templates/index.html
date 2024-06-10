@@ -3,13 +3,31 @@
 {% block title %}
 Bienvenue à Newdle
 {% endblock %}
-
+{% block header %}
+            <a class="navbar-brand" href="{% url 'index'%}">Newdle</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="login/">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="eco-conception/">Eco-conception</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact/">Contact</a>
+                    </li>
+                </ul>
+            </div>
+{% endblock %}
 {% block content %}
 <header class="text-center py-5">
     <div class="container">
         <h1 class="display-4">Bienvenue à Newdle</h1>
         <p class="lead">Le site de gestion d'absence et notes mieux que Moodle</p>
-        <a href="#" class="btn btn-dark btn-lg">Rejoignez-nous</a>
+        <a href="login/" class="btn btn-dark btn-lg">Rejoignez-nous</a>
     </div>
 </header>
 {% endblock %}
