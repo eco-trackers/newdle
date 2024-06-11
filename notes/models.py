@@ -8,5 +8,3 @@ class Note(models.Model):
     profil=models.CharField(max_length=20)
     def __str__(self):
         return self.valeur + '|' + str(self.subject)+'|'+str(self.profil)
-
-# Create your models here.
