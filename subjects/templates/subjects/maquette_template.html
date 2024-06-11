@@ -1,0 +1,22 @@
+<table>
+    <thead>
+        <tr>
+            <th>UE</th>
+            <th>Subjects</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ue, subject_dict in ue_dict.items %}
+        <tr>
+            <td>{{ ue }}</td>
+            <td>
+                <ul>
+                    {% for subject in subject_dict %}
+                    <li>{{ subject }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -12,26 +12,24 @@ Newdle - Page principale
         <div class="col-md-4">
             <div class="category mb-5">
                 <h2 class="category-title">Matières</h2>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Algo SD</h5>
-                        <p class="card-text">Introduction</p>
-                        <a class="badge badge-secondary">savoir plus ↗️</a>
+                <div id="subjects-container">
+                    {% for item in subjects_with_absences %}
+                    <div class="card mb-4 subject-card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.subject.name }}</h5>
+                            <p class="card-text">UE : {{ item.subject.ue.name }}</p>
+                            <a href="/subjects/{{ item.subject.id }}" class="badge badge-warning">Voir le détails</a>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">SGBD</h5>
-                        <p class="card-text">Langage SQL partie 1</p>
-                        <a class="badge badge-warning">savoir plus ↗️</a>
-                    </div>
-                </div>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Calcul Matriciel</h5>
-                        <p class="card-text">CM1 CM</p>
-                        <a class="badge badge-secondary">savoir plus ↗️</a>
-                    </div>
+                <div id="subjects-pagination-controls" class="text-center mt-3">
+                    <button id="subjects-prev-btn" class="btn btn-info" onclick="prevSubjectsPage()"> 
+                        <i class="fa fa-chevron-left"></i>
+                     </button>
+                    <button id="subjects-next-btn" class="btn btn-info" onclick="nextSubjectsPage()"> 
+                        <i class="fa fa-chevron-right"></i>    
+                    </button>
                 </div>
             </div>
         </div>
@@ -66,29 +64,110 @@ Newdle - Page principale
         <div class="col-md-4">
             <div class="category mb-5">
                 <h2 class="category-title">Absences</h2>
+                {% if type == '0' %}
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h5 class="card-title">Business Intelligence</h5>
-                        <p class="card-text">Séance 04/06/2024</p>
-                        <a class="badge badge-warning">savoir plus ↗️</a>
+                        <h5 class="card-title">Mes statistiques</h5>
+                        <p class="card-text">Nombre d'absence : {{ n_abs }}</p>
+                        <p class="card-text">Nombre de retard : {{ n_late }}</p>
                     </div>
                 </div>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Config Base</h5>
-                        <p class="card-text">Séance 29/05/2024</p>
-                        <a class="badge badge-warning">savoir plus ↗️</a>
+                {% endif %}
+                <div id="absences-container">
+                    {% for item in subjects_with_absences %}
+                    <div class="card mb-4 absence-card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.subject.name }}</h5>
+                            <p class="card-text">Nombre d'absences: {{ item.absence_count }}</p>
+                            <a href="/absence/{{ item.subject.name }}?details" class="badge badge-warning">Voir le détails</a>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Anglais</h5>
-                        <p class="card-text">Séance 09/03/2024</p>
-                        <a class="badge badge-secondary">savoir plus ↗️</a>
-                    </div>
-                </div>
+            <div id="pagination-controls" class="text-center mt-3">
+                <button id="prev-btn" class="btn btn-info" onclick="prevPage()">
+                    <i class="fa fa-chevron-left"></i>
+                </button>
+                <button id="next-btn" class="btn btn-info" onclick="nextPage()">
+                    <i class="fa fa-chevron-right"></i>
+                </button>
             </div>
         </div>
     </div>
+    </div>
 </div>
 {% endblock %}
+{% block scripts %}
+<script>
+    const itemsPerPage = 2;
+    let currentPage = 0;
+    
+    function showPage(page) {
+        const absences = document.querySelectorAll('#absences-container .absence-card');
+        const totalItems = absences.length;
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+        if (page < 0) page = 0;
+        if (page >= totalPages) page = totalPages - 1;
+
+        absences.forEach((card, index) => {
+            card.style.display = (index >= page * itemsPerPage && index < (page + 1) * itemsPerPage) ? 'block' : 'none';
+        });
+
+        currentPage = page;
+
+        document.getElementById('prev-btn').disabled = (currentPage <= 0);
+        document.getElementById('next-btn').disabled = (currentPage >= totalPages - 1);
+    }
+
+    function prevPage() {
+        showPage(currentPage - 1);
+    }
+
+    function nextPage() {
+        showPage(currentPage + 1);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        showPage(currentPage);
+    });
+</script>
+<script>
+    // Configuration pour les cartes de matières
+    const subjectsItemsPerPage = 3;
+    let currentSubjectsPage = 0;
+
+    function showSubjectsPage(page) {
+        const subjects = document.querySelectorAll('#subjects-container .subject-card');
+        const totalSubjectsItems = subjects.length;
+        const totalSubjectsPages = Math.ceil(totalSubjectsItems / subjectsItemsPerPage);
+
+        if (page < 0) page = 0;
+        if (page >= totalSubjectsPages) page = totalSubjectsPages - 1;
+
+        subjects.forEach((card, index) => {
+            card.style.display = (index >= page * subjectsItemsPerPage && index < (page + 1) * subjectsItemsPerPage) ? 'block' : 'none';
+        });
+
+        currentSubjectsPage = page;
+
+        document.getElementById('subjects-prev-btn').disabled = (currentSubjectsPage <= 0);
+        document.getElementById('subjects-next-btn').disabled = (currentSubjectsPage >= totalSubjectsPages - 1);
+    }
+
+    function prevSubjectsPage() {
+        showSubjectsPage(currentSubjectsPage - 1);
+    }
+
+    function nextSubjectsPage() {
+        showSubjectsPage(currentSubjectsPage + 1);
+    }
+
+    // Initialisation de la page
+    document.addEventListener('DOMContentLoaded', () => {
+        showSubjectsPage(currentSubjectsPage);
+    });
+</script>
+{% endblock %}
+
+

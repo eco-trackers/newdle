@@ -1,24 +1,44 @@
-<!DOCTYPE html>
-{% load static %}
-<html>
+{% extends 'base.html' %}
 
-<head>
-    <title>Ue Detail</title>
-    <h2>Connected as: {{ request.user.email }} <br> user level: {{ request.user.profil.type }}</h2>
-</head>
+{% block title %}
+{{ ue.name }}
+{% endblock %}
 
-<body>
+{% block content %}
+<div class="container my-5">
     <h1>{{ ue.name }}</h1>
-    <h5>coef: {{ ue.coef }}</h5>
-    <h5>semester: {{ ue.semester }}</h5>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" href="#">Details</a>
+        </li>
+    </ul>
+    <div class="accordion mt-3" id="accordionExample">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
+                        aria-expanded="true" aria-controls="collapseOne">
+                        Généralités
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body">
 
-    <a href="{% url 'ue-edit-view' ue_id=ue.id%}">edit</a>
+                    <p>Coefficient : {{ ue.coef }}</p>
+                    <p>Semestre : {{ ue.semester }}</p>
 
-    <a href="{% url 'ue-delete-view' ue_id=ue.id %}">delete</a>
+                    {% if can_manage_ue %}
+                        <a href="{% url 'subjects:ue-edit-view' ue_id=ue.id %}" class="btn btn-primary mb-2">Gérer</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" id="headingTwo">
+            </div>
 
-</body>
-
-
-
-
-</html>
+        </div>
+    </div>
+</div>
+{% endblock %}

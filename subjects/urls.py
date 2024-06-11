@@ -2,7 +2,9 @@ from django.contrib import admin
 from django.urls import path,include
 from . import views
 
+
 app_name='subjects'
+
 urlpatterns = [
     path('',views.subjects_home_view,name="subjects-home-view"),
     path('<int:subject_id>/',views.subjects_get_detail_view,name='subjects-get-detail-view'),
@@ -14,4 +16,5 @@ urlpatterns = [
     path('ue/new',views.create_ue,name='ue-new-view'),
     path('ue/<int:ue_id>/edit/',views.edit_ue_view,name='ue-edit-view'),
     path('ue/<int:ue_id>/delete/',views.delete_ue,name='ue-delete-view'),
+    path('maquette/',views.view_maquette,name='maquette-view'),
 ]
