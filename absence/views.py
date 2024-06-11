@@ -30,7 +30,7 @@ class AbsenceView(View):
     @method_decorator(login_required)
     def get(self, request,id=None):
         user = Profil.objects.get(user=request.user)
-        subject = Subject.objects.get(name=id)
+        subject = Subject.objects.get(id=id)
         student_group = subject.student_group
         if user.type == '0' and is_student(subject.name, user.id):
             if id is None or 'details' in request.GET:
@@ -117,7 +117,7 @@ class AbsenceView(View):
         else :
             return redirect('group:show')
             
-            
+
             
 def index_view(request):
     return render(request, 'index.html')
@@ -224,9 +224,12 @@ def get_subjects(profil_id):
         groups = user.group.all()
         subjects = Subject.objects.filter(student_group__in=groups).distinct()
         return subjects
+
+
+
 def get_subjects_prof(profil_id):
         user = Profil.objects.get(id=profil_id)
-        subjects =  Subject.objects.filter(prof = user.id).distinc()
+        subjects =  Subject.objects.filter(prof = user.id).distinct()
         return subjects
       
 @login_required
@@ -234,11 +237,11 @@ def absence_main(request):
     user = Profil.objects.get(user=request.user)
     type = user.type
     match type:
-        case 0:
+        case '0':
             subjects = get_subjects(user.id)
-        case 1:
+        case '1':
             subjects = get_subjects_prof(user.id)
-        case 2:
+        case '2':
             subjects = Subject.objects.all()
 
 

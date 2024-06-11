@@ -12,37 +12,69 @@ from django.contrib import messages
 # 2 admin
 
 
+@login_required
+def get_prof_ue(request):
+    return_list = []
+    if request.user.profil.type == '2':
+        return UE.objects.all()
+    elif request.user.profil.type == '1':
+        for subject in get_prof_subjects(request):
+            if request.user.profil in subject.prof.all():
+                return_list.append(subject.ue)
+    else:
+        return []
+
 # frontend view
 @login_required
 def subjects_home_view(request):  # show the list of subjects to manage
+    
+    ue_dict = {}
+
     if request.user.profil.type == '2':  # if admin, list the id of all subjects
-        subjects_list = Subject.objects.all()
+        ue_list = UE.objects.all()
     elif request.user.profil.type == '1':  # if prof, list only the subjects he is responsible for
-        subjects_list = get_prof_subjects(request)
+        ue_list = get_prof_ue(request)
     elif request.user.profil.type == '0':  # if etudiant, list only the subjects he is registered for
-        subjects_list = get_student_subjects(request)
+        ue_list = get_student_ues(request)
     else:
         print("user unknown")
-        subjects_list = []
-    print(subjects_list)
-    return render(request, 'subjects/subjects_template.html', {'subjects_list': subjects_list})
+        ue_dict = {}
+    
+    if ue_list is not None:
+        for ue in ue_list:
+            ue_dict[ue] = get_ue_subjects(request,ue)
+
+    #return render(request, 'subjects/subjects_template.html', {'subjects_list': subjects_list})
+    return render(request, 'matières.html',{'ue_dict':ue_dict})
 
 
 # frontend view
 @login_required
 # show the details of a subject
 def subjects_get_detail_view(request, subject_id):
-    if is_subject_manager(request,subject_id) is False:
-        # permission denied
-        return redirect('subjects-home-view')
+    # if is_subject_manager(request,subject_id) is False:
+    #     # permission denied
+    #     return redirect('subjects:subjects-home-view')
     subject = get_object_or_404(Subject, id=subject_id)
     context = { 'subject_id':subject.id,
                 'subject_name': subject.name,
                 'subject_coef': subject.coef,
                 'subject_ue': subject.ue,
                 'subject_prof': subject.prof.all(),
-                'subject_student_group': subject.student_group.all()}
-    return render(request, 'subjects/subject_detail_template.html', context)
+                'subject_student_list': get_subject_students(request,subject_id),
+                'subject_group_list': subject.student_group.all(),
+                'can_manage_subject': is_subject_manager(request,subject_id)}
+    #return render(request, 'subjects/subject_detail_template.html', context)
+    return render(request, 'matière.html',context)
+
+@login_required
+def get_subject_students(request,subject_id):
+    subject = get_object_or_404(Subject, id=subject_id)
+    student_list = []
+
+    for group in subject.student_group.all():
+        student_list.append(group.profil_set.all())
+    return student_list
 
 
 # super backend view
@@ -87,9 +119,9 @@ def is_subject_manager(request, subject_id):
 def subjects_add_group(request, subject_id,group_id):    # add a group to course
     # check if user is a teacher that is manager of the course
     if not is_subject_manager(request.user, subject_id):
-        return redirect('subjects-home-view')
+        return redirect('subjects:subjects-home-view')
     subject.student_group.add(get_object_or_404(Group, id=group_id))
-    return redirect('subjects-get-detail-view', subject_id)
+    return redirect('subjects:subjects-get-detail-view', subject_id)
 
 
 # super backend view
@@ -97,14 +129,14 @@ def subjects_add_group(request, subject_id,group_id):    # add a group to course
 def subjects_remove_group(request, subject_id,group_id):  # remove group from course
     # check if user is a teacher that is manager of the course
     if not is_subject_manager(request.user, subject_id):
-        return redirect('subjects-home-view')
+        return redirect('subjects:subjects-home-view')
     subject.student_group.remove(get_object_or_404(Group, id=group_id))
-    return redirect('subjects-get-detail-view', subject_id)
+    return redirect('subjects:subjects-get-detail-view', subject_id)
 
 @login_required
 def subjects_add_prof(request, subject_id,prof_id): # add a prof to course as manager
     if not is_subject_manager(request.user, subject_id):
-        return redirect('subjects-home-view')
+        return redirect('subjects:subjects-home-view')
     
     subject = get_object_or_404(Subject, id=subject_id)
     subject.prof.add(get_object_or_404(Profil, id=prof_id))
@@ -114,7 +146,7 @@ def subjects_add_prof(request, subject_id,prof_id): # add a prof to course as ma
 @login_required
 def subjects_remove_prof(request, subject_id,prof_id):
     if not is_subject_manager(request.user, subject_id):
-        return redirect('subjects-home-view')
+        return redirect('subjects:subjects-home-view')
     
     subject = get_object_or_404(Subject, id=subject_id)
     subject.prof.remove(get_object_or_404(Profil, id=prof_id))
@@ -125,7 +157,7 @@ def subjects_remove_prof(request, subject_id,prof_id):
 @login_required
 def create_subject(request):
     if request.user.profil.type == '0':
-        return redirect('subjects-home-view')
+        return redirect('subjects:subjects-home-view')
 
     if request.method == 'POST':
         subject = Subject()
@@ -160,20 +192,20 @@ def create_subject(request):
         
 
         subject.save()
-        return redirect('subjects-home-view')
+        return redirect('subjects:subjects-home-view')
     else:
 
         context = {'ue_list': UE.objects.all(),
                   'prof_list': Profil.objects.filter(type='1').all(),
                   'group_list': Group.objects.all()}
         
-        return render(request, 'subjects/subject_create.html',context)
+        return render(request, 'subject_create.html',context)
         
 
 @login_required
 def edit_view(request,subject_id):
     if not is_subject_manager(request, subject_id):
-        return redirect('subjects-home-view')
+        return redirect('subjects:subjects-home-view')
     
     if request.method == 'POST':
         subject = get_object_or_404(Subject, id=subject_id)
@@ -194,7 +226,7 @@ def edit_view(request,subject_id):
             #print(f"added {len(group_id_list)} groups to the ue list")
         else:
             messages.error(request, "No group selected! Please select a group")
-            return render(request, 'subjects/subject_edit.html',{   'subject': get_object_or_404(Subject, id=subject_id),
+            return render(request, 'subject_edit.html',{   'subject': get_object_or_404(Subject, id=subject_id),
                   'ue_list': UE.objects.all(),
                   'prof_list': Profil.objects.filter(type='1').all(),
                   'group_list': Group.objects.all()}) # need to add messgae block to base for eror msg to appear
@@ -208,15 +240,16 @@ def edit_view(request,subject_id):
         
 
         subject.save()
-        return redirect('subjects-get-detail-view',subject_id)
+        return redirect('subjects:subjects-get-detail-view',subject_id)
 
     context = {   'subject': get_object_or_404(Subject, id=subject_id),
                   'ue_list': UE.objects.all(),
                   'prof_list': Profil.objects.filter(type='1').all(),
-                  'group_list': Group.objects.all()}
+                  'group_list': Group.objects.all(),
+                  'subject_ue': get_object_or_404(Subject, id=subject_id).ue,}
 
 
-    return render(request, 'subjects/subject_edit.html', context)
+    return render(request, 'subject_edit.html', context)
 
 @login_required
 def delete_subject(request,subject_id):
@@ -226,7 +259,7 @@ def delete_subject(request,subject_id):
     subject = get_object_or_404(Subject, id=subject_id)
     subject.delete()
 
-    return redirect('subjects-home-view')
+    return redirect('subjects:subjects-home-view')
 
 @login_required
 def get_student_ues(request):
@@ -255,7 +288,7 @@ def ue_home_view(request):
 @login_required
 def ue_get_detail_view(request,ue_id):
     if not is_ue_manager(request, ue_id):
-        return redirect('ue-home-view')
+        return redirect('subjects:ue-home-view')
     ue = get_object_or_404(UE, id=ue_id)
     return render(request, 'subjects/ue_detail_template.html', {'ue': ue})
 
@@ -264,7 +297,7 @@ def ue_get_detail_view(request,ue_id):
 @login_required
 def create_ue(request):
     if request.user.profil.type == '0':
-        return redirect('ue-home-view')
+        return redirect('subjects:ue-home-view')
     
     if request.method == 'POST':
         ue = UE()
@@ -273,7 +306,7 @@ def create_ue(request):
         ue.semester = request.POST['semester']
         ue.coef = request.POST['coef']
         ue.save()
-        return redirect('ue-home-view')
+        return redirect('subjects:ue-home-view')
     else:
         return render(request, 'subjects/ue_create.html')
 
@@ -297,7 +330,7 @@ def delete_ue(request,ue_id):
     ue = get_object_or_404(UE, id=ue_id)
     ue.delete()
 
-    return redirect('ue-home-view')
+    return redirect('subjects:ue-home-view')
 
 @login_required
 def edit_ue_view(request,ue_id):
@@ -313,7 +346,35 @@ def edit_ue_view(request,ue_id):
 
 
         ue.save()
-        return redirect('ue-get-detail-view',ue_id)
+        return redirect('subjects:ue-get-detail-view',ue_id)
     else:
         return render(request, 'subjects/ue_edit.html',{'ue': get_object_or_404(UE, id=ue_id)})
 
+
+@login_required
+def get_ue_subjects(request,input_ue):
+    return Subject.objects.filter(ue=input_ue).all()
+
+@login_required
+def view_maquette(request):
+    if request.user.profil.type == '0':
+        
+        ue_dict = {}
+
+        if request.user.profil.type == '2':  # if admin, list the id of all subjects
+            ue_list = UE.objects.all()
+        elif request.user.profil.type == '1':  # if prof, list only the subjects he is responsible for
+            ue_list = get_prof_ue(request)
+        elif request.user.profil.type == '0':  # if etudiant, list only the subjects he is registered for
+            ue_list = get_student_ues(request)
+        else:
+            print("user unknown")
+            ue_dict = {}
+        
+        if ue_list is not None:
+            for ue in ue_list:
+                ue_dict[ue] = get_ue_subjects(request,ue)
+
+        return render(request, 'subjects/maquette_template.html',{'ue_dict':ue_dict})
+    else: # admin et profs pas de maquette a afficher
+        return redirect('subjects:ue-home-view')

@@ -8,7 +8,25 @@ Tableau de Bord des Matières
 <main class="container mt-5">
     <h2 class="text-center text-white">Liste des Matières</h2>
     <div id="ueContainer">
-        <!-- Les cartes des matières organisées par UE seront générées ici -->
+        <a href="{% url 'subjects:subjects-new-view' %}" class="btn btn-primary mb-2">Nouvelle matière</a>
+        {% for ue, subject_dict in ue_dict.items %}
+        <div class="ue-section mb-5">
+            <h3 class="text-white">{{ ue.name }}</h3>
+            <div class="row">
+                {% for subject in subject_dict %}
+                <div class="col-md-4 mb-4">
+                    <div class="card card-subject text-black" >
+                        <div class="card-body">
+                            <a href="{% url 'subjects:subjects-get-detail-view' subject_id=subject.id%}"><h5 class="card-title">{{ subject.name }}</h5></a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        
     </div>
 </main>
 {% endblock %}
@@ -17,59 +35,5 @@ Tableau de Bord des Matières
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const subjects = [
-            { name: 'Mathématiques discrète I', ue: 'UE1-Maths-info' },
-            { name: 'Mathématiques discrète II', ue: 'UE1-Maths-info' },
-            { name: 'Mathématiques et signal', ue: 'UE1-Maths-info' },
-            { name: 'Programmation fonctionnelle & preuves', ue: 'UE1-Maths-info' },
-            { name: 'Architecture des ordinateurs', ue: 'UE2-Informatique base' },
-            { name: 'ICG', ue: 'UE2-Informatique base' },
-            { name: 'Découverte des Réseaux', ue: 'UE2-Informatique base' },
-            { name: 'Unix commandes de base', ue: 'UE2-Informatique base' },
-            { name: 'Systèmes d\'exploitation', ue: 'UE2-Informatique base' },
-            { name: 'Technologie WEB I', ue: 'UE3-Développement WEB' },
-            { name: 'Technologie WEB II', ue: 'UE3-Développement WEB' },
-            { name: 'Programmation WEB', ue: 'UE3-Développement WEB' },
-        ];
-
-        const ueContainer = document.getElementById('ueContainer');
-        const ueMap = {};
-
-        subjects.forEach(subject => {
-            if (!ueMap[subject.ue]) {
-                ueMap[subject.ue] = [];
-            }
-            ueMap[subject.ue].push(subject);
-        });
-
-        Object.keys(ueMap).forEach(ue => {
-            const ueSection = document.createElement('div');
-            ueSection.classList.add('ue-section', 'mb-5');
-            const ueTitle = document.createElement('h3');
-            ueTitle.classList.add('text-white');
-            ueTitle.textContent = ue;
-            ueSection.appendChild(ueTitle);
-
-            const row = document.createElement('div');
-            row.classList.add('row');
-            ueMap[ue].forEach(subject => {
-                const card = document.createElement('div');
-                card.classList.add('col-md-4', 'mb-4');
-                card.innerHTML = `
-                    <div class="card card-subject text-black">
-                        <div class="card-body">
-                            <h5 class="card-title">${subject.name}</h5>
-                        </div>
-                    </div>
-                `;
-                row.appendChild(card);
-            });
-
-            ueSection.appendChild(row);
-            ueContainer.appendChild(ueSection);
-        });
-    });
-</script>
 {% endblock %}
+

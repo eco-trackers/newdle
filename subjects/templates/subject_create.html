@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Nouvelle matière
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" href="#">Création</a>
+        </li>
+    </ul>
+    <div class="accordion mt-3" id="accordionExample">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
+                        aria-expanded="true" aria-controls="collapseOne">
+                        Nouveau sujet
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body">
+                    <form method="POST" id="subject_create_form" action="">
+                        {% csrf_token %}
+                        <div>
+                            <label for="name">Name:</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div>
+                            <label for="coef">Coefficient:</label>
+                            <input type="number" id="coef" name="coef" required>
+                        </div>
+                        <div>
+                            <label for="ue">UE:</label>
+                            {% for ue in ue_list %}
+                            <input type='radio' class="ue_checkbox" name="ue" value="{{ue.id}}" required>{{ ue.name }}</input>
+                            {% endfor %}
+                            <br>
+                            <label for="prof">Ajouter d'autre profs au cours:</label>
+                            {% for prof in prof_list %}
+                            <input type='checkbox' class="prof_checbkbox" name="prof" value="{{ prof.id }}">{{ prof}}</input>
+                            {% endfor %}
+
+                            <br>
+                            <label for="group">Groupes ayant accès au cours:</label>
+                            {% for group in group_list %}
+                            <input type='checkbox' class="group_checbkbox" name="group" value="{{ group.id }}">{{group.name }}</input>
+                            {% endfor %}
+
+                        </div>
+                        <button type="submit" class="submit_button">Create</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- check that at least one  -->
+<script type="text/javascript">
+    $("#subject_create_form").submit(function (e) {
+        var len = document.querySelectorAll('.group_checbkbox:checked').length
+        //alert('# of checked ues: '+len);
+        if (len <= 0) {
+            e.preventDefault();
+            if (!alert('Check at least one group!')) { window.location.reload(); }
+        }
+    });
+</script>
+{% endblock %}

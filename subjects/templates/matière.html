@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block title %}
-[1A ASE/IR] Statistiques et systèmes stochastiques 2023-2024
+[{{ subject_ue.name }}] {{ subject_name }}
 {% endblock %}
 
 {% block content %}
 <div class="container my-5">
-    <h1>[1A ASE/IR] Statistiques et systèmes stochastiques 2023-2024</h1>
+    <h1>[{{ subject_ue.name }}] {{ subject_name }}</h1>
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link active" href="#">Cours</a>
@@ -14,42 +14,50 @@
         <li class="nav-item">
             <a class="nav-link" href="#">Participants</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">Compétences</a>
-        </li>
     </ul>
     <div class="accordion mt-3" id="accordionExample">
         <div class="card">
             <div class="card-header" id="headingOne">
                 <h2 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
+                        aria-expanded="true" aria-controls="collapseOne">
                         Généralités
                     </button>
                 </h2>
             </div>
             <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
                 <div class="card-body">
-                    <p>Voici la page dédiée au cours de statistiques et systèmes stochastiques.</p>
-                    <p>Me contacter : joel.dion@uha.fr</p>
-                    <p>Bureau 3.50</p>
-                    <p><strong>Examen papier le 22/05 de 8h à 10h.</strong></p>
-                    <a href="#" class="btn btn-primary mb-2">syllabus</a>
-                    <a href="#" class="btn btn-primary mb-2">Présence</a>
+                    <p>Voici la page dédiée au cours de {{ subject_name }}.</p>
+                    <p>Me contacter : {% for prof in subject_prof %} - {{ prof.user.email }}{% endfor %}</p>
+                    <p>Coefficient : {{ subject_coef }}</p>
+                    <a href="{% url 'absence:absence' id=subject_id %}" class="btn btn-primary mb-2">Présence</a>
+                    <a href="#" class="btn btn-primary mb-2">Notes</a>
+                    {% if can_manage_subject %}
+                    <a href="{% url 'subjects:subjects-edit-view' subject_id=subject_id %}" class="btn btn-primary mb-2">Gérer</a>
+                    <a href="{% url 'subjects:subjects-delete-view' subject_id=subject_id %}" class="btn btn-primary mb-2" style="background-color: red;">Supprimer</a>
+                    
+                    {% endif %}
                 </div>
             </div>
         </div>
         <div class="card">
             <div class="card-header" id="headingTwo">
                 <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        1. Rappels et compléments (probabilités élémentaires, lois usuelles et théorèmes limites)
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                        data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Participants
                     </button>
                 </h2>
             </div>
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
                 <div class="card-body">
-                    <a href="#" class="btn btn-primary mb-2">CM1 3S</a>
-                    <a href="#" class="btn btn-primary mb-2">CM1 3S corrigé</a>
+                    <ul>
+                        {% for g in subject_group_list %}
+                        <li><a href="{% url 'group:show' id=g.id %}"> {{ g.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                    
+                    
                 </div>
             </div>
         </div>
