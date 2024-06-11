@@ -1,22 +1,45 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Edit UE</title>
-</head>
-<body>
-    <h1>Edit UE</h1>
-    <form action="" method="POST">
-        {% csrf_token %}
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" value="{{ ue.name }}" required><br><br>
-        
-        <label for="semester">Semester:</label>
-        <input type="text" id="semester" name="semester" value="{{ ue.semester }}" required></input><br><br>
-        
-        <label for="coef">coef:</label>
-        <input type="number" id="coef" name="coef" value="{{ ue.coef }}"  required><br><br>
-        
-        <input type="submit" value="Update ue">
-    </form>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1>{{ ue.name }}</h1>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" href="#">Gestion d'UE</a>
+        </li>
+    </ul>
+    <div class="accordion mt-3" id="accordionExample">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
+                        aria-expanded="true" aria-controls="collapseOne">
+                        Gestion
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" value="{{ ue.name }}" required><br><br>
+                        
+                        <label for="semester">Semester:</label>
+                        <input type="text" id="semester" name="semester" value="{{ ue.semester }}" required></input><br><br>
+                        
+                        <label for="coef">coef:</label>
+                        <input type="number" id="coef" name="coef" value="{{ ue.coef }}"  required><br><br>
+                        
+                        <input type="submit" value="Update ue">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

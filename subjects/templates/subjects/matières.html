@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Tableau de Bord des Matières
+{% endblock %}
+
+{% block content %}
+<main class="container mt-5">
+    <h2 class="text-center text-white">Liste des Matières</h2>
+    <div id="ueContainer">
+        <a href="{% url 'subjects:subjects-new-view' %}" class="btn btn-primary mb-2">Nouvelle matière</a>
+        {% for ue, subject_dict in ue_dict.items %}
+        <div class="ue-section mb-5">
+            <h3 class="text-white">{{ ue.name }}</h3>
+            <div class="row">
+                {% for subject in subject_dict %}
+                <div class="col-md-4 mb-4">
+                    <div class="card card-subject text-black" >
+                        <div class="card-body">
+                            <a href="{% url 'subjects:subjects-get-detail-view' subject_id=subject.id%}"><h5 class="card-title">{{ subject.name }}</h5></a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}
+
