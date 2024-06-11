@@ -100,6 +100,10 @@ Newdle - Page principale
 {% block scripts %}
 <script src="{% static 'js/main_abs.js' %}"></script>
 <script src="{% static 'js/main_sub.js' %}"></script>
+<script>
+    const userType = {{ type }};
+    inititemPerPage(userType);
+</script>
 {% endblock %}
 
 

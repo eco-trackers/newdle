@@ -1,6 +1,8 @@
-const itemsPerPage = 2;
+let itemsPerPage = 2;
 let currentPage = 0;
-
+function inititemPerPage(userType) {
+    itemsPerPage = (userType >= 1) ? 3 : 2;
+}
 function showPage(page) {
     const absences = document.querySelectorAll('#absences-container .absence-card');
     const totalItems = absences.length;
