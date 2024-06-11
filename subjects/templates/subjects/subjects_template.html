@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Subject Home</title>
+    <h2>Connected as: {{ request.user.email }} <br> user level: {{ request.user.profil.type }}</h2>
+</head>
+
+<body>
+    <h1>Welcome to the Subject Home Page</h1>
+    <p>This is the home page for subjects.</p>
+    <ul>
+        {% for subject in subjects_list %}
+        <li>
+            <h2>{{ subject.name }}</h2>
+
+            
+            <h5>{{ subject.ue }}</h5>
+
+            {% if request.user.profil.type == '0' %}
+            <h5>coeff: {{ subject.coef }}</h5>
+            <b>Mark: get_student_mark_here</b>
+            {% elif request.user.profil.type == '1' %}
+            <a href="{% url 'subjects:subjects-get-detail-view' subject_id=subject.id %}">Marks</a>
+            <a href="{% url 'subjects:subjects-get-detail-view' subject_id=subject.id %}">Manage</a>
+            {% elif request.user.profil.type == '2' %}
+            <h5>coeff: {{ subject.coef }}</h5>
+            <a href="{% url 'subjects:subjects-get-detail-view' subject_id=subject.id %}">Marks</a>
+            <a href="{% url 'subjects:subjects-get-detail-view' subject_id=subject.id %}">Manage</a>
+            {% endif %}
+            
+        </li>
+        {% endfor %}
+    </ul>
+
+    {% if request.user.profil.type == '1' or request.user.profil.type == '2' %}
+    <a href="{% url 'subjects:subjects-new-view' %}">Create subject</a>
+    {% endif %}
+
+</body>
+
+</html>
