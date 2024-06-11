@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, get_user_model
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib import messages
@@ -154,16 +155,31 @@ def password_reset_request(request):
     if request.method == "POST":
         if request.user.is_authenticated:
             logout(request)
-            messages.warning(request, "You have been logged out to reset your password.")
-        username = request.POST.get('username')
-        user = get_user_model().objects.filter(username=username).first()
-        print(username)
-        if user:
+            messages.warning(request, "Vous avez été déconnecté pour réinitialiser votre mot de passe.")
+
+        username = request.POST.get('username').strip().lower()
+
+        try:
+            user = get_user_model().objects.get(username=username)
+            profil = Profil.objects.get(user=user)
+        except get_user_model().DoesNotExist:
+            user = None
+            profil = None
+            
+        except Profil.DoesNotExist:
+            user = get_user_model().objects.get(username=username)
+            profil = None
+
+        if user is not None and profil is not None:
             send_password_reset_email(user, username)
-            messages.success(request, "A password reset link has been sent to your email address.")
+            messages.success(request, "Un lien de réinitialisation de mot de passe a été envoyé à votre adresse e-mail.")
+            return render(request, 'login/password_reset_sent.html')
         else:
-            messages.error(request, "No user is associated with this email address.")
+            messages.error(request, "Aucun utilisateur n'est associé à ce nom d'utilisateur ou le type de profil est incorrect.")
+            return render(request, 'login/connection.html')
+
     return render(request, 'login/password_reset_sent.html')
+
 
 @login_required
 def delete_users(request):
