@@ -32,6 +32,9 @@ def show(request,id=None):
 def create(request):
     if request.method == 'POST':
         name = request.POST.get('name')
+
+        if name == '':
+            return redirect('group:create')
         
         # Create a new group object
         group = Group(name=name)
@@ -51,6 +54,9 @@ def create(request):
 def edit(request, id):
     if request.method == 'POST':
         name = request.POST.get('name')
+
+        if name == '':
+            return redirect('group:edit', id=id)
         
         # Change the group object
         group = Group.objects.get(id=id)
@@ -59,7 +65,6 @@ def edit(request, id):
 
         # Update the users in the group
         users = User.objects.all()
-        print(request.POST)
         for user in users:
             if str(user.id) in request.POST.getlist('users'):
                 print('add')

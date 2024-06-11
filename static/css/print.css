@@ -1,0 +1,148 @@
+@media print {
+    :root {
+      --text-color: #000000; /* Utilisation du noir pour le texte */
+      --background-color: #ffffff; /* Fond blanc pour éviter l'encre */
+      --card-background-color: #ffffff; /* Fond blanc pour les cartes */
+      --forms-background-color: #ffffff; /* Fond blanc pour les formulaires */
+      --forms-background-color-focus: #ffffff; /* Fond blanc pour les formulaires en focus */
+      --primary-color: #000000; /* Couleur primaire noire pour le texte et les liens */
+      --primary-color-hover: #000000; /* Couleur noire pour les hover */
+      --primary-color-dark: #000000; /* Couleur noire pour les boutons foncés */
+    }
+  
+    body {
+      background-color: var(--background-color); /* Fond blanc */
+      color: var(--text-color); /* Texte noir */
+      font-family: Arial, sans-serif;
+      display: block; /* Display block pour éviter les flex issues */
+      margin: 0;
+    }
+  
+    .container {
+      margin-top: 10px;
+      padding: 0;
+    }
+  
+    .card {
+      background-color: var(--card-background-color); /* Fond blanc */
+      border: 1px solid #000; /* Ajouter des bordures pour la carte */
+      border-radius: 0; /* Pas de bordure arrondie pour l'impression */
+      box-shadow: none; /* Pas d'ombre pour l'impression */
+      max-width: 100%; /* Utilisation de la pleine largeur */
+      margin: 0;
+      padding: 20px;
+    }
+  
+    .form-control {
+      background-color: var(--forms-background-color); /* Fond blanc */
+      border: 1px solid #000; /* Ajouter des bordures */
+      color: var(--text-color); /* Texte noir */
+      border-radius: 0; /* Pas de bordure arrondie */
+    }
+  
+    .form-control:focus {
+      background-color: var(--forms-background-color-focus); /* Fond blanc */
+      color: var(--text-color); /* Texte noir */
+      box-shadow: none;
+      border-color: var(--primary-color); /* Bordure noire */
+    }
+  
+    .btn-primary,
+    .btn-secondary {
+      background-color: transparent; /* Pas de fond pour les boutons */
+      border: 1px solid #000; /* Ajouter des bordures */
+      border-radius: 0; /* Pas de bordure arrondie */
+      color: var(--primary-color); /* Texte noir */
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+    }
+  
+    .btn-primary:hover,
+    .btn-secondary:hover {
+      background-color: transparent; /* Pas de fond pour les boutons */
+      color: var(--primary-color); /* Texte noir */
+    }
+  
+    a {
+      color: var(--primary-color); /* Couleur noire pour les liens */
+    }
+  
+    a:hover {
+      color: var(--primary-color); /* Couleur noire pour les liens */
+      text-decoration: underline; /* Souligner les liens au survol */
+    }
+  
+    .text-center {
+      margin-top: 20px;
+    }
+  
+    header {
+      background-color: var(--background-color); /* Fond blanc */
+    }
+  
+    header .container {
+      display: block;
+      text-align: center;
+      height: auto; /* Hauteur automatique pour l'impression */
+    }
+  
+    header h1 {
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+  
+    header .lead {
+      margin-bottom: 40px;
+      color: var(--text-color); /* Texte noir */
+    }
+  
+    header .btn-dark {
+      background-color: transparent; /* Pas de fond pour les boutons */
+      border: 1px solid var(--primary-color); /* Bordure noire */
+      color: var(--text-color); /* Texte noir */
+    }
+  
+    header .btn-dark:hover {
+      background-color: transparent; /* Pas de fond pour les boutons */
+      border: 1px solid var(--primary-color); /* Bordure noire */
+    }
+  
+    footer {
+      background-color: var(--background-color); /* Fond blanc */
+      color: var(--text-color); /* Texte noir */
+      text-align: center;
+      padding: 0;
+      margin: 0;
+    }
+  
+    .navbar {
+      background-color: var(--background-color); /* Fond blanc */
+    }
+  
+    .nav-item {
+      color: var(--primary-color); /* Texte noir */
+    }
+  
+    .navbar-brand {
+      font-weight: bold;
+      color: var(--text-color) !important; /* Texte noir */
+    }
+  
+    .navbar-nav .nav-link {
+      margin-right: 15px;
+      color: var(--text-color) !important; /* Texte noir */
+    }
+  
+    .navbar-nav .btn-outline-dark {
+      margin-left: 15px;
+      color: var(--text-color) !important; /* Texte noir */
+      border-color: var(--primary-color); /* Bordure noire */
+    }
+  
+    .navbar-nav .btn-outline-dark:hover {
+      background-color: transparent; /* Pas de fond pour les boutons */
+      color: var(--text-color) !important; /* Texte noir */
+    }
+  }
+  

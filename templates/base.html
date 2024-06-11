@@ -7,6 +7,7 @@
     <title>{% block title %}Newdle{% endblock %}</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/print.css' %}" media="print">
     {% block styles %}{% endblock %}
 </head>
 <body>
@@ -56,11 +57,11 @@
             <p>&copy; 2024 Newdle. Tous droits réservés.</p>
         </div>
     </footer>
-   
-    {% block scripts %}
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {% block scripts %}
     {% endblock %}
 </body>
 </html>
