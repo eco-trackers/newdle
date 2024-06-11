@@ -14,37 +14,41 @@ def index(request):
 def principal(request):
     user = Profil.objects.get(user=request.user)
     type = user.type
+    absences_data = []
+    n_abs = None
+    n_late = None
     match type:
         case '0':
             subjects = get_subjects(user.id)
+            absences = Absence.objects.filter(student=user.id, status='0').values('subject_id', 'subject__name').annotate(absence_count=Count('id'))
+            n_abs =  Absence.objects.filter(student=user.id, status='0').count()
+            n_late =  Absence.objects.filter(student=user.id, status='1').count()
         case '1':
             subjects = get_subjects_prof(user.id)
+            absences = Absence.objects.filter(status='0').values('subject_id', 'subject__name').annotate(absence_count=Count('id'))
         case '2':
             subjects = Subject.objects.all()
-    n_abs = None
-    n_late = None
-    absences_data = []
+            absences = Absence.objects.filter(status='0').values('subject_id', 'subject__name').annotate(absence_count=Count('id'))
+
     
-    if type == '0':
-        absences = Absence.objects.filter(student=user.id, status='0').values('subject_id', 'subject__name').annotate(absence_count=Count('id'))
-        
-        # Créer une liste de sujets avec absences
-        for subject in subjects:
-            subject_absences = next((item for item in absences if item['subject_id'] == subject.id), None)
-            if subject_absences:
-                absences_data.append({
-                    'subject': subject,
-                    'absence_count': subject_absences['absence_count']
-                })
-            else:
-                absences_data.append({
-                    'subject': subject,
-                    'absence_count': 0
-                })
-    
+    for subject in subjects:
+        subject_absences = next((item for item in absences if item['subject_id'] == subject.id), None)
+        if subject_absences:
+            absences_data.append({
+                'subject': subject,
+                'absence_count': subject_absences['absence_count']
+            })
+        else:
+            absences_data.append({
+                'subject': subject,
+                'absence_count': 0
+            })
+
     context = {
         'subjects_with_absences': absences_data,
         'type': type,
+        'n_abs': n_abs,
+        'n_late':n_late
     }
     return render(request, 'principal.html',context)
 
