@@ -284,13 +284,25 @@ def ue_home_view(request):
     elif request.user.profil.type == '0':
         return render(request, 'subjects/ue_template.html', {'ue_list': get_student_ues(request)})
 
+@login_required
+def is_ue_manager(request, ue_id):
+    if request.user.profil.type == '2':
+        return True
+    elif request.user.profil.type == '1':
+        return True
+    elif request.user.profil.type == '0':
+        return False
+    else:
+        return False
 
 @login_required
 def ue_get_detail_view(request,ue_id):
     if not is_ue_manager(request, ue_id):
         return redirect('subjects:ue-home-view')
     ue = get_object_or_404(UE, id=ue_id)
-    return render(request, 'subjects/ue_detail_template.html', {'ue': ue})
+    return render(request, 'subjects/ue_detail_template.html', {'ue': ue,
+        'can_manage_ue': is_ue_manager(request, ue_id)
+    })
 
 
 

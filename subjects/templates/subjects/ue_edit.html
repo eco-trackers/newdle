@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
 {% block title %}
-{{  }}
+
 {% endblock %}
 
 {% block content %}
 <div class="container my-5">
-    <h1>[{{ subject_ue.name }}] {{ subject.name }}</h1>
+    <h1>{{ ue.name }}</h1>
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" href="#">Gestion</a>
+            <a class="nav-link active" href="#">Gestion d'UE</a>
         </li>
     </ul>
     <div class="accordion mt-3" id="accordionExample">
