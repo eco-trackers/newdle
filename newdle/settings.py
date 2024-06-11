@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.middleware.gzip.GZipMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -54,6 +55,17 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+GZIP_MIDDLEWARE_MIMETYPES = [
+    'text/html',
+    'text/plain',
+    'text/xml',
+    'application/json',
+    'application/javascript',
+    'text/css',
+]
+
+GZIP_MIN_LENGTH = 50
 
 ROOT_URLCONF = 'newdle.urls'
 

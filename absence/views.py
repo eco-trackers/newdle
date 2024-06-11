@@ -41,7 +41,7 @@ class AbsenceView(View):
                 return render(request, 'absence/absence.html', {'mode': 'details', 'absences': absences, 'level': int(Profil.objects.get(user=request.user).type), 'subject_id': id })
             else:
                 form = AbsenceForm()
-                return render(request, 'absence/absence.html', {'mode': 'input', 'form': form, 'level': int(Profil.objects.get(user=request.user).type)})
+                return render(request, 'absence/absence.html', {'mode': 'input', 'form': form, 'level': int(Profil.objects.get(user=request.user).type), 'subject_id':id})
         elif (user.type == '1' and is_prof(subject.name, user.id)) or user.type == '2' :
             if id is None or 'details' in request.GET:
                 absences = Absence.objects.filter(subject=Subject.objects.get(name=id)).order_by('-date')
