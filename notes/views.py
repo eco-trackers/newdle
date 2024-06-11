@@ -1,42 +1,40 @@
 from django.shortcuts import render
 from .models import Note
 from django.contrib.auth.decorators import login_required
+from subjects.models import Subject
+from profil.models import Profil
+from django.shortcuts import get_object_or_404
 
 
-@login_required
-def list_notes_view(request,subject_name=None,):
-    if request.user.profil.type == '2':  
-        notes = Note.objects.all().select_related('subject', 'student')  
-    elif request.user.profil.type == '1':
-        subjects=get_prof_subjects(request.user.id)
-        notes = Note.objects.filter(subjects=subjects).select_related('subject', 'student')
-    elif request.user.profil.type == '0':
-        subjects=get_student_subjects(request.user.id)     
-        notes = Note.objects.filter(subjects=subjects).select_related('subject')
-    else :
-        return render(request, 'notes/unauthorized.html')
-    context = {
-            'notes': notes,
-        }
-    return render(request, 'notes/list.html', context)
+def get_prof_subjects(request):
+    return Subject.objects.filter(prof=request.user.profil).all()
+
+
+
+def get_student_subjects(request):  # get courses the student is enrolled in
+    groups = Profil.objects.get(request.user.id).group.all()
+    return Subject.objects.filter(student_group__in=groups).distinct()
 
 @login_required
+def list_notes_view(request,subject_id):
+    context = {'s':get_object_or_404(Subject,id=subject_id)}
+    if request.user.profil.type=='0':
+        notes = get_object_or_404(Note,subject=get_object_or_404(Subject,id=subject_id),profil=request.user.profil)
+        context['note']= notes
+   
+    elif request.user.profil.type=='1'or request.user.profil.type=='2':
+        notes=Note.objects.filter(subject=get_object_or_404(Subject,id=subject_id))
+        context['notes']= notes
+
+
+    #print("miaw: ",context)
+    # Render the template with the list of notes
+    return render(request, 'list_notes.html',context)
+
+
+
+
 def create_notes_view(request):
-    if request.user.profil.type == '1':
-        if request.method == 'POST':
-            form = NotesForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('list_notes') 
-        else:
-            form = NotesForm()
-        context = {
-            'form': form,
-        }
-    else:
-        return render(request, 'notes/unauthorized.html')
-    return render(request, 'notes/create.html', context)
- 
-@login_required
-def moyenne_view():
-    return render(request, 'notes/create.html', context)
+    
+    return render(request, 'create_notes.html', {})
+
