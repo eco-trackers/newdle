@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}
 Newdle - Page principale
 {% endblock %}
@@ -98,76 +98,8 @@ Newdle - Page principale
 </div>
 {% endblock %}
 {% block scripts %}
-<script>
-    const itemsPerPage = 2;
-    let currentPage = 0;
-    
-    function showPage(page) {
-        const absences = document.querySelectorAll('#absences-container .absence-card');
-        const totalItems = absences.length;
-        const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-        if (page < 0) page = 0;
-        if (page >= totalPages) page = totalPages - 1;
-
-        absences.forEach((card, index) => {
-            card.style.display = (index >= page * itemsPerPage && index < (page + 1) * itemsPerPage) ? 'block' : 'none';
-        });
-
-        currentPage = page;
-
-        document.getElementById('prev-btn').disabled = (currentPage <= 0);
-        document.getElementById('next-btn').disabled = (currentPage >= totalPages - 1);
-    }
-
-    function prevPage() {
-        showPage(currentPage - 1);
-    }
-
-    function nextPage() {
-        showPage(currentPage + 1);
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        showPage(currentPage);
-    });
-</script>
-<script>
-    // Configuration pour les cartes de matières
-    const subjectsItemsPerPage = 3;
-    let currentSubjectsPage = 0;
-
-    function showSubjectsPage(page) {
-        const subjects = document.querySelectorAll('#subjects-container .subject-card');
-        const totalSubjectsItems = subjects.length;
-        const totalSubjectsPages = Math.ceil(totalSubjectsItems / subjectsItemsPerPage);
-
-        if (page < 0) page = 0;
-        if (page >= totalSubjectsPages) page = totalSubjectsPages - 1;
-
-        subjects.forEach((card, index) => {
-            card.style.display = (index >= page * subjectsItemsPerPage && index < (page + 1) * subjectsItemsPerPage) ? 'block' : 'none';
-        });
-
-        currentSubjectsPage = page;
-
-        document.getElementById('subjects-prev-btn').disabled = (currentSubjectsPage <= 0);
-        document.getElementById('subjects-next-btn').disabled = (currentSubjectsPage >= totalSubjectsPages - 1);
-    }
-
-    function prevSubjectsPage() {
-        showSubjectsPage(currentSubjectsPage - 1);
-    }
-
-    function nextSubjectsPage() {
-        showSubjectsPage(currentSubjectsPage + 1);
-    }
-
-    // Initialisation de la page
-    document.addEventListener('DOMContentLoaded', () => {
-        showSubjectsPage(currentSubjectsPage);
-    });
-</script>
+<script src="{% static 'js/main_abs.js' %}"></script>
+<script src="{% static 'js/main_sub.js' %}"></script>
 {% endblock %}
 
 
