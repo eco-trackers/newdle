@@ -1,34 +1,30 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 Error</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-</head>
-<body id="page-404">
-    <header>
-        <div class="menu-header">
-            <div class="logo">
-                <!-- <a href="{% url ':index' %}">
-                    <img src="{% static 'img/logo_transparent.png' %}" alt="App logo">
-                </a> -->
-            </div>
-            <div class="boutons-container">
-              <!-- <a href="{% url ':login' %}" class="button">Login</a> -->
-            </div>
-        </div>
-    </header>
+{% extends "base.html" %}
 
-    <section class="mid-404">
-        <h1>404 - Page Not Found</h1>
-        <p>Sorry, but the page you were looking for could not be found. </p>
-        <span>🥹</span>
-    </section>
-
-    <footer id="f404">
-        <p>&copy; 2024 Newdle. All rights deserved.</p>
-    </footer>
-</body>
-</html>
+{% block title %}Page Non Trouvée - 404{% endblock %}
+{% block header %}
+            <a class="navbar-brand" href="{% url 'index'%}">Newdle</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login:log_in'%}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'eco'%}">Eco-conception</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact'%}">Contact</a>
+                    </li>
+                </ul>
+            </div>
+{% endblock %}
+{% block content %}
+<div class="container text-center mt-5">
+    <h1 class="display-1">404</h1>
+    <h2 class="mb-4">Page Non Trouvée</h2>
+    <p class="lead">Désolé, la page que vous cherchez n'existe pas ou a été déplacée.</p>
+    <a class="btn btn-primary mt-3" href="{% url 'index' %}">Retour à l'accueil</a>
+</div>
+{% endblock %}

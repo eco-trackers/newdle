@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}Écoconception{% endblock %}
+{% block header %}
+            <a class="navbar-brand" href="{% url 'index'%}">Newdle</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login:log_in'%}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'eco'%}">Eco-conception</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact'%}">Contact</a>
+                    </li>
+                </ul>
+            </div>
+{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1>Écoconception de notre site</h1>
+    <p>Chez Newdle, nous sommes engagés dans l'écoconception pour réduire notre impact environnemental. Voici quelques-unes des mesures que nous avons prises :</p>
+    <ul>
+        <li>Optimisation des ressources serveur pour réduire la consommation énergétique.</li>
+        <li>Utilisation de technologies et pratiques de développement durable.</li>
+        <li>Minimisation de la taille des fichiers et optimisation des images pour réduire la bande passante.</li>
+        <li>Encouragement de pratiques de navigation respectueuses de l'environnement.</li>
+    </ul>
+    <p>Nous croyons fermement que chaque petit geste compte pour protéger notre planète.</p>
+
+    <h2>Écoindex de notre site</h2>
+    <table class="table table-striped text-white">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Url</th>
+                <th>Nombre requêtes</th>
+                <th>Taille(kb)</th>
+                <th>Taille du dom</th>
+                <th>GES(gCo2)</th>
+                <th>Eau</th>
+                <th>ecoIndex</th>
+                <th>Note</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>11/06/2024 10:03:56</td>
+                <td>http://localhost:8000/absence/ANCS/?</td>
+                <td>11</td>
+                <td>444</td>
+                <td>69</td>
+                <td>1.21</td>
+                <td>1.81</td>
+                <td>89.57</td>
+                <td>A</td>
+            </tr>
+            <tr>
+                <td>11/06/2024 10:03:47</td>
+                <td>http://localhost:8000/absence/ANCS/?details</td>
+                <td>11</td>
+                <td>441</td>
+                <td>91</td>
+                <td>1.23</td>
+                <td>1.84</td>
+                <td>88.57</td>
+                <td>A</td>
+            </tr>
+            <tr>
+                <td>11/06/2024 10:03:41</td>
+                <td>http://localhost:8000/login/</td>
+                <td>11</td>
+                <td>444</td>
+                <td>99</td>
+                <td>1.23</td>
+                <td>1.85</td>
+                <td>88.32</td>
+                <td>A</td>
+            </tr>
+            <tr>
+                <td>11/06/2024 10:03:38</td>
+                <td>http://localhost:8000/login/</td>
+                <td>10</td>
+                <td>442</td>
+                <td>71</td>
+                <td>1.21</td>
+                <td>1.81</td>
+                <td>89.53</td>
+                <td>A</td>
+            </tr>
+            <tr>
+                <td>11/06/2024 10:03:27</td>
+                <td>http://localhost:8000/login/</td>
+                <td>10</td>
+                <td>442</td>
+                <td>71</td>
+                <td>1.21</td>
+                <td>1.81</td>
+                <td>89.53</td>
+                <td>A</td>
+            </tr>
+            <tr>
+                <td>11/06/2024 10:03:20</td>
+                <td>http://localhost:8000/</td>
+                <td>10</td>
+                <td>439</td>
+                <td>41</td>
+                <td>1.16</td>
+                <td>1.74</td>
+                <td>92.00</td>
+                <td>A</td>
+            </tr>
+            <tr>
+                <td>11/06/2024 10:02:06</td>
+                <td>http://localhost:8000/</td>
+                <td>0</td>
+                <td>0</td>
+                <td>60</td>
+                <td>1.07</td>
+                <td>1.61</td>
+                <td>96.34</td>
+                <td>A</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

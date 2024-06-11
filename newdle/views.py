@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 
 from absence.models import Absence
@@ -9,6 +10,7 @@ from subjects.models import Subject
 def index(request):
     return render(request, 'index.html')
 
+@login_required
 def principal(request):
     user = Profil.objects.get(user=request.user)
     type = user.type
@@ -51,3 +53,6 @@ def eco(request):
 
 def contact(request):
     return render(request, 'contact.html')
+
+def page_404(request, exception):
+    return render(request, '404.html', status=404)
