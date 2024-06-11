@@ -15,7 +15,7 @@ def get_student_subjects(request):  # get courses the student is enrolled in
     groups = Profil.objects.get(request.user.id).group.all()
     return Subject.objects.filter(student_group__in=groups).distinct()
 
-
+@login_required
 def list_notes_view(request):
     # Retrieve all notes from the database
     notes = Note.objects.all()
@@ -24,9 +24,9 @@ def list_notes_view(request):
     return render(request, 'list_notes.html', {'notes': notes})
 
 
-
+@login_required
 def create_notes_view(request):
-    form= NoteCreateForm(request.POST or None)
+    form= NoteCreateForm(request.POST or None)  
     if form.is_valid():
         form.save()
         form= NoteCreateForm()
