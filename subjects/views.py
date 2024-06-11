@@ -23,6 +23,8 @@ def get_prof_ue(request):
                 return_list.append(subject.ue)
     else:
         return []
+    
+    return return_list
 
 # frontend view
 @login_required
@@ -44,9 +46,7 @@ def subjects_home_view(request):  # show the list of subjects to manage
         for ue in ue_list:
             ue_dict[ue] = get_ue_subjects(request,ue)
 
-    #return render(request, 'subjects/subjects_template.html', {'subjects_list': subjects_list})
     return render(request, 'subjects/matières.html',{'ue_dict':ue_dict})
-
 
 # frontend view
 @login_required
@@ -365,6 +365,8 @@ def edit_ue_view(request,ue_id):
 
 @login_required
 def get_ue_subjects(request,input_ue):
+    if request.user.profil.type == '1': # only return the subjects the prof is responsible for
+        return Subject.objects.filter(ue=input_ue).all()
     return Subject.objects.filter(ue=input_ue).all()
 
 @login_required

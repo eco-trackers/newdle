@@ -12,6 +12,9 @@ Tableau de Bord des Matières
         {% if request.user.profil.type != '0' %}
         <a href="{% url 'subjects:subjects-new-view' %}" class="btn btn-primary mb-2">Nouvelle matière</a>
         {% endif %}
+        <a href="{% url 'subjects:ue-home-view' %}" class="btn btn-primary mb-2">Voir les UEs seulement</a>
+        
+        
         {% for ue, subject_dict in ue_dict.items %}
         <div class="ue-section mb-5">
             <h3 class="text-white">{{ ue.name }}</h3>
