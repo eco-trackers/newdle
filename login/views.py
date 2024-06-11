@@ -177,4 +177,3 @@ def delete_users(request):
                     user.delete()
         messages.success(request, 'Selected users have been deleted successfully.')
     return redirect('login:tab_and_upload_csv_view')
-

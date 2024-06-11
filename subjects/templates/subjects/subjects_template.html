@@ -21,12 +21,12 @@
             <h5>coeff: {{ subject.coef }}</h5>
             <b>Mark: get_student_mark_here</b>
             {% elif request.user.profil.type == '1' %}
-            <a href="{% url 'subjects-get-detail-view' subject_id=subject.id %}">Marks</a>
-            <a href="{% url 'subjects-get-detail-view' subject_id=subject.id %}">Manage</a>
+            <a href="{% url 'subjects:subjects-get-detail-view' subject_id=subject.id %}">Marks</a>
+            <a href="{% url 'subjects:subjects-get-detail-view' subject_id=subject.id %}">Manage</a>
             {% elif request.user.profil.type == '2' %}
             <h5>coeff: {{ subject.coef }}</h5>
-            <a href="{% url 'subjects-get-detail-view' subject_id=subject.id %}">Marks</a>
-            <a href="{% url 'subjects-get-detail-view' subject_id=subject.id %}">Manage</a>
+            <a href="{% url 'subjects:subjects-get-detail-view' subject_id=subject.id %}">Marks</a>
+            <a href="{% url 'subjects:subjects-get-detail-view' subject_id=subject.id %}">Manage</a>
             {% endif %}
             
         </li>
@@ -34,7 +34,7 @@
     </ul>
 
     {% if request.user.profil.type == '1' or request.user.profil.type == '2' %}
-    <a href="{% url 'subjects-new-view' %}">Create subject</a>
+    <a href="{% url 'subjects:subjects-new-view' %}">Create subject</a>
     {% endif %}
 
 </body>
