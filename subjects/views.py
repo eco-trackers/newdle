@@ -45,7 +45,7 @@ def subjects_home_view(request):  # show the list of subjects to manage
             ue_dict[ue] = get_ue_subjects(request,ue)
 
     #return render(request, 'subjects/subjects_template.html', {'subjects_list': subjects_list})
-    return render(request, 'matières.html',{'ue_dict':ue_dict})
+    return render(request, 'subjects/matières.html',{'ue_dict':ue_dict})
 
 
 # frontend view
@@ -65,7 +65,7 @@ def subjects_get_detail_view(request, subject_id):
                 'subject_group_list': subject.student_group.all(),
                 'can_manage_subject': is_subject_manager(request,subject_id)}
     #return render(request, 'subjects/subject_detail_template.html', context)
-    return render(request, 'matière.html',context)
+    return render(request, 'subjects/matière.html',context)
 
 @login_required
 def get_subject_students(request,subject_id):
@@ -199,7 +199,7 @@ def create_subject(request):
                   'prof_list': Profil.objects.filter(type='1').all(),
                   'group_list': Group.objects.all()}
         
-        return render(request, 'subject_create.html',context)
+        return render(request, 'subjects/subject_create.html',context)
         
 
 @login_required
@@ -226,7 +226,7 @@ def edit_view(request,subject_id):
             #print(f"added {len(group_id_list)} groups to the ue list")
         else:
             messages.error(request, "No group selected! Please select a group")
-            return render(request, 'subject_edit.html',{   'subject': get_object_or_404(Subject, id=subject_id),
+            return render(request, 'subjects/subject_edit.html',{   'subject': get_object_or_404(Subject, id=subject_id),
                   'ue_list': UE.objects.all(),
                   'prof_list': Profil.objects.filter(type='1').all(),
                   'group_list': Group.objects.all()}) # need to add messgae block to base for eror msg to appear
@@ -249,7 +249,7 @@ def edit_view(request,subject_id):
                   'subject_ue': get_object_or_404(Subject, id=subject_id).ue,}
 
 
-    return render(request, 'subject_edit.html', context)
+    return render(request, 'subjects/subject_edit.html', context)
 
 @login_required
 def delete_subject(request,subject_id):
