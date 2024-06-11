@@ -44,7 +44,11 @@ Page de connexion
                 </div>
             </div>
         </div>
-       
+        {% if user_type == '2' %}
+        <div class="mt-3">
+            <a href="{% url 'login:tab_and_upload_csv_view' %}" class="btn btn-secondary">Gérer les utilisateurs</a>
+        </div>
+        {% endif %}
     </div>
     
     {% endblock %}

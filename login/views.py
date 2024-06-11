@@ -17,16 +17,31 @@ import os
 FROM_EMAIL = 'maxime.sanciaume@uha.fr'
 
 def log_in(request):
+    user_type = None
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
         if form.is_valid():
             user = authenticate(request, username=form.cleaned_data['username'], password=form.cleaned_data['password'])
             if user is not None:
                 login(request, user)
+                profil = Profil.objects.get(user=user)
+                user_type = profil.type
                 return redirect('/principal/')
     else:
         form = AuthenticationForm()
-    return render(request, 'login/connection.html', {'form': form})
+        if request.user.is_authenticated:
+            try:
+                profil = Profil.objects.get(user=request.user)
+                user_type = profil.type
+            except Profil.DoesNotExist:
+                user_type = None
+                
+    context = {
+        'form': form,
+        'user_type': user_type
+    }
+    print(user_type)
+    return render(request, 'login/connection.html', context)
 
 def send_password_reset_email(user, email):
     token = default_token_generator.make_token(user)
