@@ -37,26 +37,28 @@ Newdle - Page principale
         <div class="col-md-4">
             <div class="category mb-5">
                 <h2 class="category-title">Notes</h2>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Analyse générale</h5>
-                        <p class="card-text">13/20</p>
-                        <a class="badge badge-warning">savoir plus ↗️</a>
+                <div id="notes-container">
+                    {% for item in subjects_with_absences %}
+                    <div class="card mb-4 note-card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.subject.name }}</h5>
+                            {% if type == '0' %}
+                            <p class="card-text">Ma Note: {{ item.absence_count }}</p>
+                            {% else %}
+                            <p class="card-text">Moyenne: {{ item.absence_count }}</p>
+                            {% endif %}
+                            <a href="/note/{{ item.subject.id }}" class="badge badge-warning">Voir le détails</a>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">DDRS</h5>
-                        <p class="card-text">12/20</p>
-                        <a class="badge badge-warning">savoir plus ↗️</a>
-                    </div>
-                </div>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Anglais</h5>
-                        <p class="card-text">16/20</p>
-                        <a class="badge badge-secondary">savoir plus ↗️</a>
-                    </div>
+                <div id="notes-pagination-controls" class="text-center mt-3">
+                    <button id="notes-prev-btn" class="btn btn-info" onclick="prevNotesPage()">
+                        <i class="fa fa-chevron-left"></i>
+                    </button>
+                    <button id="notes-next-btn" class="btn btn-info" onclick="nextNotesPage()">
+                        <i class="fa fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -98,8 +100,7 @@ Newdle - Page principale
 </div>
 {% endblock %}
 {% block scripts %}
-<script src="{% static 'js/main_abs.js' %}"></script>
-<script src="{% static 'js/main_sub.js' %}"></script>
+<script src="{% static 'js/change_page.js' %}"></script>
 <script>
     const userType = {{ type }};
     inititemPerPage(userType);
