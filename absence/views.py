@@ -30,7 +30,7 @@ class AbsenceView(View):
     @method_decorator(login_required)
     def get(self, request,id=None):
         user = Profil.objects.get(user=request.user)
-        subject = Subject.objects.get(id=id)
+        subject = Subject.objects.get(name=id)
         student_group = subject.student_group
         if user.type == '0' and is_student(subject.name, user.id):
             if id is None or 'details' in request.GET:

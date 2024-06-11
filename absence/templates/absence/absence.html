@@ -127,8 +127,10 @@
                         </table>
                         <span>
                             {% if absences.has_previous %}
+                            <div>
                                 <a href="?details&page=1" class="btn btn-dark">&laquo; première</a>
                                 <a href="?details&page={{ absences.previous_page_number }}" class="btn btn-dark">précédente</a>
+                            </div>
                             {% endif %}
   
                         <span>
@@ -136,8 +138,10 @@
                         </span>
   
                         {% if absences.has_next %}
+                        <div>
                             <a href="?details&page={{ absences.next_page_number }}" class="btn btn-dark" >suivante</a>
                             <a href="?details&page={{ absences.paginator.num_pages }}" class="btn btn-dark">dernière &raquo;</a>
+                        </div>
                         {% endif %}
                         </span>
                     </div>
