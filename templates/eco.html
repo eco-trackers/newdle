@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Écoconception{% endblock %}
 {% block header %}
-            <a class="navbar-brand" href="{% url 'index'%}">Newdle</a>
+            <a class="navbar-brand" href="{% url 'index'%}">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 30px; margin-right: 2px; margin-bottom: 5px;">Newdle
+            </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
