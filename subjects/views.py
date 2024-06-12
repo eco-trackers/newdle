@@ -387,7 +387,7 @@ def edit_ue_view(request, ue_id):
 @login_required
 def get_ue_subjects(request, input_ue):
     if request.user.profil.type == '1':  # only return the subjects the prof is responsible for
-        return Subject.objects.filter(ue=input_ue).all()
+        return get_prof_subjects(request).filter(ue=input_ue).all()
     return Subject.objects.filter(ue=input_ue).all()
 
 
@@ -427,6 +427,7 @@ def gen_maquette_dict(request, ue_list):
             if semester not in semester_dict:
                 semester_dict[semester] = {}
             semester_dict[semester][ue] = get_ue_subjects(request, ue)
+    print(semester_dict)
     return semester_dict
 
 

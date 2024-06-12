@@ -37,18 +37,18 @@
                         <div>
                             <label for="ue">UE:</label>
                             {% for ue in ue_list %}
-                            <input type='radio' class="ue_checkbox" name="ue" value="{{ue.id}}" {% if ue.id == subject.ue.id %}checked{% endif %} required>{{ ue.name }}</input>
+                            <div><input type='radio' class="ue_checkbox" name="ue" value="{{ue.id}}" {% if ue.id == subject.ue.id %}checked{% endif %} required>{{ ue.name }}</input></div>
                             {% endfor %}
                             <br>
                             <label for="prof">Ajouter d'autre profs au cours:</label>
                             {% for prof in prof_list %}
-                            <input type='checkbox' class="prof_checbkbox" name="prof" value="{{ prof.id }}" {% if prof in subject.prof.all %}checked{% endif %}>{{ prof }}</input>
+                            <div><input type='checkbox' class="prof_checbkbox" name="prof" value="{{ prof.id }}" {% if prof in subject.prof.all %}checked{% endif %}>{{ prof }}</input></div>
                             {% endfor %}
                             
                             <br>
                             <label for="group">Groupes ayant accès au cours:</label>
                             {% for group in group_list %}
-                            <input type='checkbox' class="group_checbkbox" name="group" value="{{ group.id }}" {% if group in subject.student_group.all %}checked{% endif %}>{{ group.name }}</input>
+                            <div><input type='checkbox' class="group_checbkbox" name="group" value="{{ group.id }}" {% if group in subject.student_group.all %}checked{% endif %}>{{ group.name }}</input></div>
                             {% endfor %}
                 
                         </div>
@@ -60,4 +60,76 @@
         </div>
     </div>
 </div>
+
+<style>
+
+    /* Inputs */
+input[type="text"],
+input[type="number"] {
+  background-color: var(--forms-background-color);
+  border: none;
+  border-radius: 5px;
+  color: var(--text-color);
+  padding: 10px;
+  font-size: 16px;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+  background-color: var(--forms-background-color-focus);
+  outline: none;
+  box-shadow: 0 0 5px var(--primary-color-hover);
+}
+
+/* Checkboxes */
+.prof_checbkbox,
+.group_checbkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background-color: var(--forms-background-color);
+  border: 2px solid var(--primary-color);
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.prof_checbkbox:checked,
+.group_checbkbox:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.prof_checbkbox:focus,
+.group_checbkbox:focus {
+  outline: none;
+  box-shadow: 0 0 5px var(--primary-color-hover);
+}
+
+/* Radio Buttons */
+.ue_checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--forms-background-color);
+  border: 2px solid var(--primary-color);
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.ue_checkbox:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.ue_checkbox:focus {
+  outline: none;
+  box-shadow: 0 0 5px var(--primary-color-hover);
+}
+</style>
 {% endblock %}
