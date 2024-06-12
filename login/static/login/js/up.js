@@ -1,6 +1,1 @@
-document.getElementById('select-all').onclick = function() {
-    var checkboxes = document.getElementsByName('user_usernames');
-    for (var checkbox of checkboxes) {
-        checkbox.checked = this.checked;
-    }
-}
+document.getElementById("select-all").onclick=function(){var e=document.getElementsByName("user_usernames");for(var c of e)c.checked=this.checked};

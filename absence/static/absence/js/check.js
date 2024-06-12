@@ -1,16 +1,1 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const img = document.getElementById('photo');
-    img.onload = function() {
-        const pins = document.querySelectorAll('.pin-c');
-        const imgWidth = img.offsetWidth;
-        const imgHeight = img.offsetHeight;
-
-        pins.forEach(pin => {
-            const x = pin.getAttribute('data-x');
-            const y = pin.getAttribute('data-y');
-
-            pin.style.left = x + '%';
-            pin.style.top = y + '%';
-        });
-    };
-});
+document.addEventListener("DOMContentLoaded",function(){let t=document.getElementById("photo");t.onload=function(){let e=document.querySelectorAll(".pin-c");t.offsetWidth,t.offsetHeight,e.forEach(t=>{let e=t.getAttribute("data-x"),o=t.getAttribute("data-y");t.style.left=e+"%",t.style.top=o+"%"})}});
