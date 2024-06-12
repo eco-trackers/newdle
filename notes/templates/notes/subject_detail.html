@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ subject.name}}{% endblock %}
+
+{% block content %}
+<form action="{% url 'notes:detail.view' subject.id %}" method="post">
+    {% csrf_token %}
+    {% for note in notes %}
+        <div class="form-group">
+            <label for="note{{ note.student.id }}">{{ note.student.user.username }}</label>
+            <input type="number" class="form-control" id="note{{ note.student.id }}" name="note{{ note.student.id }}" value="{% if note.note >= 0 %}{{ note.note }}{% endif %}">
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-success">Valider</button>
+</form>
+{% endblock %}
