@@ -40,7 +40,7 @@
           <form action="{% url 'absence:mark_presence_delete' subject %}" method="post" class="d-inline">
             {% csrf_token %}
             <input type="hidden" name="pin_id" value="{{ user_pin_id }}">
-            <button type="submit" class="btn btn-danger mb-2">Annuler mon équitete</button>
+            <button type="submit" class="btn btn-danger2 mb-2">Annuler mon équitete</button>
           </form>
         </div>
       {% endif %}
