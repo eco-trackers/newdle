@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 
 from absence.models import Absence
+from notes.models import Note
+from notes.views import get_notes
 from profil.models import Profil
 from absence.views import get_subjects,get_subjects_prof
 from subjects.models import Subject
@@ -17,6 +19,7 @@ def principal(request):
     absences_data = []
     n_abs = None
     n_late = None
+    note = None
     match type:
         case '0':
             subjects = get_subjects(user.id)
@@ -33,15 +36,28 @@ def principal(request):
     
     for subject in subjects:
         subject_absences = next((item for item in absences if item['subject_id'] == subject.id), None)
+        notes = get_notes(request, subject.id)
+        if type == '0':
+            note =  note = next((item['note'] for item in notes if item['student'] == user), 'Aucune')
+        else :
+            i=0
+            n=0
+            for item in notes:
+                n += item['note']
+                i += 1
+            note = n/i
+                    
         if subject_absences:
             absences_data.append({
                 'subject': subject,
-                'absence_count': subject_absences['absence_count']
+                'absence_count': subject_absences['absence_count'],
+                'note': note
             })
         else:
             absences_data.append({
                 'subject': subject,
-                'absence_count': 0
+                'absence_count': 0,
+                'note': note
             })
 
     context = {

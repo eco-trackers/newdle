@@ -43,9 +43,21 @@ Newdle - Page principale
                         <div class="card-body">
                             <h5 class="card-title">{{ item.subject.name }}</h5>
                             {% if type == '0' %}
-                            <p class="card-text">Ma Note: {{ item.absence_count }}</p>
+                            <p class="card-text">Ma Note: 
+                                {% if item.note == -1 %}
+                                Aucune
+                                {% else %}
+                                {{ item.note }}
+                                {% endif %}
+                            </p>
                             {% else %}
-                            <p class="card-text">Moyenne: {{ item.absence_count }}</p>
+                            <p class="card-text">Moyenne: 
+                                {% if item.note == -1 %}
+                                Aucune
+                                {% else %}
+                                {{ item.note }}
+                                {% endif %}    
+                            </p>
                             {% endif %}
                             <a href="/notes" class="badge badge-warning">Voir le détails</a>
                         </div>
