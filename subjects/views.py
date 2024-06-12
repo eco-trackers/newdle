@@ -192,8 +192,6 @@ def create_subject(request):
             for prof_id in prof_id_list:
                 # add the group to the list of groups
                 subject.prof.add(get_object_or_404(Profil, id=prof_id))
-            print(f"added {len(UE.objects.filter(
-                id__in=prof_id_list))} profs to the ue list")
 
         subject.save()
         return redirect('subjects:subjects-home-view')
