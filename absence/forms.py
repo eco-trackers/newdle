@@ -42,7 +42,7 @@ class AbsenceFormT(forms.ModelForm):
             # Récupérer les instances du groupe associé au sujet
             student_groups = subject.student_group.all()
             # Filtrer les profils par ces instances de groupe
-            self.fields['student'].queryset = Profil.objects.filter(group__in=student_groups)
+            self.fields['student'].queryset = Profil.objects.filter(group__in=student_groups, type='0')
         
             
             
@@ -62,7 +62,7 @@ class AttendanceForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if subject:
             student_groups = subject.student_group.all()
-            students = Profil.objects.filter(group__in=student_groups)
+            students = Profil.objects.filter(group__in=student_groups, type='0')
             for student in students:
                 # Ajouter un champ de choix pour chaque étudiant avec le statut d'absence comme choix
                 self.fields[f'student_{student.id}'] = forms.ChoiceField(
