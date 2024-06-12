@@ -34,7 +34,7 @@ class AbsenceView(View):
         student_group = subject.student_group
         if user.type == '0' and is_student(subject.name, user.id):
             if id is None or 'details' in request.GET:
-                absences = Absence.objects.filter(student=Profil.objects.get(user=request.user)).order_by('-date')
+                absences = Absence.objects.filter(student=Profil.objects.get(user=request.user),subject=subject.id).order_by('-date')
                 paginator = Paginator(absences, 10)
                 page_number = request.GET.get('page')
                 absences = paginator.get_page(page_number)

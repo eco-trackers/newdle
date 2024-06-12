@@ -40,3 +40,11 @@ L'objectif de ce projet est de développer une application éco-conçue pour la 
     - Page Contact, à voir 
 
 - Retour à la page index toujours possible via logo Newdle.
+
+Commandes custom
+
+- Création d'un 1er admin : python manage.py custom_admin <username> <pwd>
+
+- Initialisation avec des utilisateurs : python manage.py custom_initialize static/csv/testmail.csv
+Attention à respecter les entêtes NOM Prénom email password role (student, professor ou admin)
+ 
