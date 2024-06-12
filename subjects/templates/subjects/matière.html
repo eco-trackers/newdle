@@ -32,7 +32,6 @@
                     {% if can_manage_subject %}
                     <a href="{% url 'subjects:subjects-edit-view' subject_id=subject_id %}" class="btn btn-primary mb-2">Gérer</a>
                     <a href="{% url 'subjects:subjects-delete-view' subject_id=subject_id %}" class="btn btn-primary mb-2" style="background-color: red;">Supprimer</a>
-                    
                     {% endif %}
                 </div>
             </div>
