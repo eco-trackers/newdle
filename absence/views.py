@@ -280,7 +280,7 @@ def check_photo(request,id):
             end_time = selected_photo.upload_date + timedelta(hours=2)
 
 
-            n_absence = Absence.objects.filter(subject=subject, date__range=(start_time, end_time)).count()
+            n_absence = Absence.objects.filter(subject=subject, date__range=(start_time, end_time), status = '1').count()
             n_pin = Pin.objects.filter(photo=selected_photo).count()
         return render(request, 'absence/check_photo.html', {
             'photos': photos,
@@ -315,9 +315,26 @@ def mark_presence_delete(request, id):
 def photo_delete(request, id):
     if request.method == 'POST':
         photo_id = request.POST.get('photo_id')
-        print(f"Received p_id: {photo_id}")
+
         if photo_id:
             photo = get_object_or_404(ClassPhoto, pk=photo_id)
+            date = photo.upload_date
+            start_time = date - timedelta(hours=2)
+            end_time = date + timedelta(hours=2)
+            subject = photo.subject
+            
+            Absence.objects.filter(subject=subject, date__range=(start_time, end_time), status = '1')
+            
+            for student in Profil.objects.all():
+                if is_student(subject.name, student.id) and not  Absence.objects.filter(student=student.id, subject=subject, date__range=(start_time, end_time)).exists():
+                    absence = Absence.objects.create(
+                        student=student,
+                        subject=subject,
+                        status='0',
+                        date=date
+                        )
+                    absence.save()
+                    
             photo.delete()
             return HttpResponseRedirect(reverse('absence:check_photo', kwargs={'id': id}))
 
