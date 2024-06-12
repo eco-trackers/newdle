@@ -15,7 +15,9 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-black">
         <div class="container">
             {% block header %}
-            <a class="navbar-brand" href="{% url 'index'%}">Newdle</a>
+            <a class="navbar-brand" href="{% url 'index'%}">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 30px; margin-right: 2px; margin-bottom: 5px;">Newdle
+            </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -28,7 +30,7 @@
                         <a class="nav-link" href="{% url 'principal' %}">Principal</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'notes:liste.view' %}">Notes</a>
+                        <a class="nav-link" href="{% url 'notes:list.view' %}">Notes</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'absence:absence_none' %}">Absences</a>

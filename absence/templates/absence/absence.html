@@ -82,7 +82,7 @@
                             {% endif %}
                             {% endfor %}
                         </div>
-                        <button type="submit" class="btn btn-primary">Envoyer</button>
+                        <button type="submit" class="btn btn-success">Confirmer l'appel</button>
                     </form>
                     </div>
                     </div>
@@ -146,13 +146,6 @@
                         </span>
                     </div>
                     </div>
-                {% elif mode == 'attendance' %}
-                    <h2>Faire l'Appel</h2>
-                    <form method="post"  class="form-check form-check-inline">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary">Enregistrer l'Appel</button>
-                    </form>
                 {% endif %}
             </div>
     <div class="col-md-4">
