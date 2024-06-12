@@ -35,7 +35,7 @@ def get_all_student_notes(request):
         notes.append({
             "subject":subject.name,
             "UE":subject.ue,
-            "coef":subject.coef,
+            "coef":int(subject.coef),
             "note":note
         })
     return notes
@@ -47,6 +47,7 @@ def get_formatted_notes(request):
             {
                 "name":"UE",
                 "count":noteCount,
+                "avg":avgValue,
                 "notes":[
                     {
                         "subject":"subjectName",
@@ -80,7 +81,18 @@ def get_formatted_notes(request):
                     "note":subject["note"],
                     "coef":subject["coef"]
                 })
-    print(ues)
+    # calculate avg
+    for ue in ues:
+        total = 0
+        avg_count = 0
+        for subject in ue["notes"]:
+            if subject["note"] != -1:
+                total += subject["note"] * subject["coef"]
+                avg_count += subject["coef"]
+        if avg_count != 0:
+            ue["avg"] = round(total / avg_count, 2)
+        else:
+            ue["avg"] = -1
     return ues
         
 def get_notes(request,subject_id):

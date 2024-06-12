@@ -8,6 +8,7 @@
         <thead class="text-light">
             <tr>
                 <th>UE</th>
+                <th>Moyenne</th>
                 <th>Matière</th>
                 <th>Note</th>
                 <th>Coef</th>
@@ -17,6 +18,7 @@
             {% for ue in ues %}
             <tr>
                 <td rowspan="{{ ue.count }}">{{ ue.name.name }}</td>
+                <td rowspan="{{ ue.count }}">{% if ue.avg >= 0 %}{{ ue.avg }}{% endif %}</td>
                 {% for note in ue.notes %}
                 <td>{{ note.subject }}</td>
                 {% if note.note >= 0 %}
