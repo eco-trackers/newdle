@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Professor Maquette Form</title>
+</head>
+<body>
+    <form method="post" action="">
+        {% csrf_token %}
+        <h2>Select Groups</h2>
+        <select name="group" multiple>
+            {% for group in group_list %}
+                <option value="{{ group.id }}">{{ group.name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

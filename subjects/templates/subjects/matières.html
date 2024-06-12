@@ -14,6 +14,8 @@ Tableau de Bord des Matières
         {% endif %}
         <a href="{% url 'subjects:ue-home-view' %}" class="btn btn-primary mb-2">Voir les UEs seulement</a>
         
+        <a href="{% url 'subjects:maquette-view' %}" class="btn btn-primary mb-2">Maquette</a>
+        
         
         {% for ue, subject_dict in ue_dict.items %}
         <div class="ue-section mb-5">
