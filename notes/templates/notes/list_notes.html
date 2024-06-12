@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Notes{% endblock %}
+
+{% block content %}
+<div class="table-responsive bg-dark">
+    <table class="table table-striped table-hover">
+        <thead class="text-light">
+            <tr>
+                <th>UE</th>
+                <th>Matière</th>
+                <th>Note</th>
+                <th>Coef</th>
+            </tr>
+        </thead>
+        <tbody class="text-light">
+            {% for ue in ues %}
+            <tr>
+                <td rowspan="{{ ue.count }}">{{ ue.name.name }}</td>
+                {% for note in ue.notes %}
+                <td>{{ note.subject }}</td>
+                {% if note.note >= 0 %}
+                    <td>{{ note.note }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+                <td>{{ note.coef }}</td>
+                </tr>
+                <tr>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+
+
+        </tbody>
+    </table>
+</div>
+{% endblock %}

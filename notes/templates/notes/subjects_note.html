@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Notes{% endblock %}
+
+{% block content %}
+    {% for subject in subjects %}
+        <h1>{{ subject.name }}</h1>
+        <a href="{% url 'notes:detail.view' subject.id %}" class="btn btn-success">Voir les notes</a>
+    {% endfor %}
+{% endblock %}
