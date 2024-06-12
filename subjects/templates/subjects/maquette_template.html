@@ -41,7 +41,7 @@
     <tbody>
         {% for semester, ues in ue_dict.items %}
             {% for ue, subjects in ues.items %}
-                {% with subjects|length as total_subjects %}
+                {% with subjects|length|add:1 as total_subjects %}
                     {% for subject in subjects %}
                         <tr class="{% cycle 'header' 'subheader' 'subsubheader' %}">
                             {% if forloop.first %}
@@ -49,6 +49,11 @@
                                 <td>{{ ue.name }}</td>
                                 <td>{{ ue.coef }}</td>
                                 <td></td>
+                                <tr>
+                                <td>{{ subject.name }}</td>
+                                <td>{{ subject.coef }}</td>
+                                <td>{% for prof in subject.prof.all %} {{ prof.user.first_name.0 }}. {{ prof.user.last_name }} {% if not forloop.last %},{% endif %} {% endfor %}</td>
+                            </tr>
                             {% else %}
                                 <td>{{ subject.name }}</td>
                                 <td>{{ subject.coef }}</td>
