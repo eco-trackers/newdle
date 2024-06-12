@@ -1,31 +1,107 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
 
-<head>
-    <title>Create UE</title>
-</head>
+{% block title %}
+Nouvelle matière
+{% endblock %}
 
-<body>
-    <h1>Create UE</h1>
-
-    <form action="" method="POST">
-        {% csrf_token %}
-        <div>
-            <label for="name">Ue Name:</label>
-            <input type="text" id="name" name="name" required><br><br>
-
+{% block content %}
+<div class="container my-5">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" href="#">Création d'UE</a>
+        </li>
+    </ul>
+    <div class="accordion mt-3" id="accordionExample">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
+                        aria-expanded="true" aria-controls="collapseOne">
+                        Nouvelle UE
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <div>
+                            <label for="name">Ue Name:</label>
+                            <input type="text" id="name" name="name" required><br><br>
+                
+                        </div>
+                        <div>
+                            <label for="semester">Ue semester:</label>
+                            <input type="text" id="semester" name="semester" required><br><br>
+                        </div>
+                        <div>
+                            <label for="coef">Coefficient:</label>
+                            <input type="number" id="coef" name="coef" required>
+                        </div>
+                
+                        <input type="submit" value="Create ue">
+                    </form>
+                </div>
+            </div>
         </div>
-        <div>
-            <label for="semester">Ue semester:</label>
-            <input type="text" id="semester" name="semester" required><br><br>
-        </div>
-        <div>
-            <label for="coef">Coefficient:</label>
-            <input type="number" id="coef" name="coef" required>
-        </div>
+    </div>
+</div>
 
-        <input type="submit" value="Create ue">
-    </form>
-</body>
+<style>
 
-</html>
+
+.card {
+  background-color: var(--card-background-color);
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.btn-link {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.btn-link:hover {
+  color: var(--primary-color-hover);
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"] {
+  background-color: var(--forms-background-color);
+  border: none;
+  border-radius: 5px;
+  color: var(--text-color);
+  padding: 10px;
+  font-size: 16px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+  background-color: var(--forms-background-color-focus);
+  outline: none;
+  box-shadow: 0 0 5px var(--primary-color-hover);
+}
+
+input[type="submit"] {
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 5px;
+  color: var(--text-color);
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color: var(--primary-color-hover);
+}
+</style>
+{% endblock %}

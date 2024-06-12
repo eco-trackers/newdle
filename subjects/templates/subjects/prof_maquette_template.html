@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Voir la maquette
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1>Maquette</h1>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" href="#">Maquette</a>
+        </li>
+    </ul>
+    <div class="accordion mt-3" id="accordionExample">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
+                        aria-expanded="true" aria-controls="collapseOne">
+                        Choix de groupe
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body">
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <h2>Select Groups</h2>
+                        <select name="group" multiple>
+                            {% for group in group_list %}
+                                <option value="{{ group.id }}">{{ group.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                        <input type="submit" value="Submit">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

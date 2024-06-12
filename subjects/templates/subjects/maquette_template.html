@@ -41,7 +41,7 @@
     <tbody>
         {% for semester, ues in ue_dict.items %}
             {% for ue, subjects in ues.items %}
-                {% with subjects|length as total_subjects %}
+                {% with subjects|length|add:1 as total_subjects %}
                     {% for subject in subjects %}
                         <tr class="{% cycle 'header' 'subheader' 'subsubheader' %}">
                             {% if forloop.first %}
@@ -49,6 +49,11 @@
                                 <td>{{ ue.name }}</td>
                                 <td>{{ ue.coef }}</td>
                                 <td></td>
+                                <tr>
+                                <td>{{ subject.name }}</td>
+                                <td>{{ subject.coef }}</td>
+                                <td>{% for prof in subject.prof.all %} {{ prof.user.first_name.0 }}. {{ prof.user.last_name }} {% if not forloop.last %},{% endif %} {% endfor %}</td>
+                            </tr>
                             {% else %}
                                 <td>{{ subject.name }}</td>
                                 <td>{{ subject.coef }}</td>
@@ -58,41 +63,12 @@
                         </tr>
                     {% endfor %}
                 {% endwith %}
-                <tr class="empty-row" style="height: 10px;"></tr>
             {% endfor %}
+            <tr class="empty-row" style="height: 10px;"></tr>
         {% endfor %}
     </tbody>
 </table>
 
-<script>
-        function myFunction() {
-            const previousRow = {};
-            const colsChanged = {};
-            let dark = false;
 
-            Array.from(document.querySelectorAll('tbody tr')).forEach((tr, rowIdx) => {
-                Array.from(tr.children).forEach((td, colIdx) => {
-                    if (rowIdx > 0 && previousRow[colIdx].text === td.innerText) {
-                        previousRow[colIdx].elem.setAttribute('rowspan', ++previousRow[colIdx].span);
-                        colsChanged[colIdx] = false;
-                        td.remove();
-                    } else {
-                        previousRow[colIdx] = { span: 1, text: td.innerText, elem: td, dark };
-                        colsChanged[colIdx] = true;
-                    }
-                });
-                const rowChanged = Object.values(colsChanged).every(Boolean);
-                dark = rowChanged && rowIdx > 0 ? !dark : dark;
-                if (dark) {
-                    tr.classList.add('dark');
-                }
-            });
-        }
-
-        // Call the function to merge rows on page load
-        window.onload = function () {
-            myFunction
-        };
-    </script>
 </body>
 </html>

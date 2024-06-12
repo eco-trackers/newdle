@@ -23,7 +23,7 @@ def get_prof_ue(request):
                 return_list.append(subject.ue)
     else:
         return []
-    
+
     return return_list
 
 # frontend view
@@ -51,6 +51,8 @@ def subjects_home_view(request):  # show the list of subjects to manage
     return render(request, 'subjects/matières.html', {'ue_dict': ue_dict})
 
 # frontend view
+
+
 @login_required
 # show the details of a subject
 def subjects_get_detail_view(request, subject_id):
@@ -280,6 +282,19 @@ def get_student_ues(request):
 
 
 @login_required
+def get_student_ues_by_id(request, user_id):
+
+    student_groups = Profil.objects.get(user=get_object_or_404(Profil, id=user_id)).group.all()
+
+    subjects = Subject.objects.filter(
+        student_group__in=student_groups).distinct()
+
+    ues = list(set([subject.ue for subject in subjects]))
+
+    return ues
+
+
+@login_required
 def ue_home_view(request):
     if request.user.profil.type == '2':
         return render(request, 'subjects/ue_template.html', {'ue_list': UE.objects.all()})
@@ -370,36 +385,83 @@ def edit_ue_view(request, ue_id):
 
 
 @login_required
-def get_ue_subjects(request,input_ue):
-    if request.user.profil.type == '1': # only return the subjects the prof is responsible for
-        return Subject.objects.filter(ue=input_ue).all()
+def get_ue_subjects(request, input_ue):
+    if request.user.profil.type == '1':  # only return the subjects the prof is responsible for
+        return get_prof_subjects(request).filter(ue=input_ue).all()
     return Subject.objects.filter(ue=input_ue).all()
 
 
+@login_required
+def maquette_student_list(request, group_list):
+    semester_dict = {}
+    for group in group_list:
+        ue_list = UE.objects.filter(student_group=group).all()
+        for ue in ue_list:
+            semester = ue.semester
+            if semester not in semester_dict:
+                semester_dict[semester] = {}
+            semester_dict[semester][ue] = get_ue_subjects(request, ue)
+    return render(request, 'subjects/maquette_template.html', {'ue_dict': semester_dict})
+
+
+@login_required
+def get_group_ues(request, group_id):
+    ue_list = []
+    group = get_object_or_404(Group, id=group_id)
+    
+    for ue in UE.objects.all():
+        for subject in get_ue_subjects(request, ue):
+            if group in subject.student_group.all():
+                ue_list.append(ue)
+
+    ue_list = list(set(ue_list))
+    return ue_list
+
+
+@login_required
+def gen_maquette_dict(request, ue_list):
+    semester_dict = {}
+    if ue_list is not None:
+        for ue in ue_list:
+            semester = ue.semester
+            if semester not in semester_dict:
+                semester_dict[semester] = {}
+            semester_dict[semester][ue] = get_ue_subjects(request, ue)
+    print(semester_dict)
+    return semester_dict
+
+
+@login_required
 def view_maquette(request):
     if request.user.profil.type == '0':
 
         semester_dict = {}
 
-        if request.user.profil.type == '2':  # if admin, list the id of all subjects
-            ue_list = UE.objects.all()
-        elif request.user.profil.type == '1':  # if prof, list only the subjects he is responsible for
-            ue_list = get_prof_ue(request)
-        elif request.user.profil.type == '0':  # if etudiant, list only the subjects he is registered for
-            ue_list = get_student_ues(request)
-        else:
-            print("user unknown")
-            semester_dict = {}
-
-        if ue_list is not None:
-            for ue in ue_list:
-                semester = ue.semester
-                if semester not in semester_dict:
-                    semester_dict[semester] = {}
-                semester_dict[semester][ue] = get_ue_subjects(request, ue)
-
+        ue_list = get_student_ues(request)
         
-        print(semester_dict)
-        return render(request, 'subjects/maquette_template.html', {'ue_dict': semester_dict})
-    else:  # admin et profs pas de maquette a afficher
-        return redirect('subjects:ue-home-view')
+
+        return render(request, 'subjects/maquette_template.html', {'ue_dict': gen_maquette_dict(request, ue_list)})
+    elif request.user.profil.type in ['1', '2']:
+        if request.method == 'POST':
+            selected_group_id = int(request.POST.get('group'))
+            
+            semester_dict = gen_maquette_dict(request, get_group_ues(request, selected_group_id))
+            
+            return render(request, 'subjects/maquette_template.html', {'ue_dict': semester_dict})
+        else:
+            return render(request, 'subjects/prof_maquette_template.html',{'group_list': get_managed_group_list(request)})
+
+
+@login_required
+def get_managed_group_list(request):
+    if request.user.profil.type == '0':
+        return None
+    elif request.user.profil.type == '1':
+        group_list = []
+        for subject in get_prof_subjects(request):
+            for group in subject.student_group.all():
+                group_list.append(group)
+        group_list = list(set(group_list))
+        return group_list
+    elif request.user.profil.type == '2':
+        return Group.objects.all()
