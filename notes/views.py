@@ -184,4 +184,3 @@ def edit_detail(request,id):
     # Render the template with the list of notes
     return render(request, 'notes/subject_detail.html', {'notes': notes,'subject':Subject.objects.get(id=id)})
     
-

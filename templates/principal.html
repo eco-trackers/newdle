@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}
 Newdle - Page principale
 {% endblock %}
@@ -12,26 +12,24 @@ Newdle - Page principale
         <div class="col-md-4">
             <div class="category mb-5">
                 <h2 class="category-title">Matières</h2>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Algo SD</h5>
-                        <p class="card-text">Introduction</p>
-                        <a class="badge badge-secondary">savoir plus ↗️</a>
+                <div id="subjects-container">
+                    {% for item in subjects_with_absences %}
+                    <div class="card mb-4 subject-card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.subject.name }}</h5>
+                            <p class="card-text">UE : {{ item.subject.ue.name }}</p>
+                            <a href="/subjects/{{ item.subject.id }}" class="badge badge-warning">Voir le détails</a>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">SGBD</h5>
-                        <p class="card-text">Langage SQL partie 1</p>
-                        <a class="badge badge-warning">savoir plus ↗️</a>
-                    </div>
-                </div>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Calcul Matriciel</h5>
-                        <p class="card-text">CM1 CM</p>
-                        <a class="badge badge-secondary">savoir plus ↗️</a>
-                    </div>
+                <div id="subjects-pagination-controls" class="text-center mt-3">
+                    <button id="subjects-prev-btn" class="btn btn-info" onclick="prevSubjectsPage()"> 
+                        <i class="fa fa-chevron-left"></i>
+                     </button>
+                    <button id="subjects-next-btn" class="btn btn-info" onclick="nextSubjectsPage()"> 
+                        <i class="fa fa-chevron-right"></i>    
+                    </button>
                 </div>
             </div>
         </div>
@@ -39,26 +37,28 @@ Newdle - Page principale
         <div class="col-md-4">
             <div class="category mb-5">
                 <h2 class="category-title">Notes</h2>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Analyse générale</h5>
-                        <p class="card-text">13/20</p>
-                        <a class="badge badge-warning">savoir plus ↗️</a>
+                <div id="notes-container">
+                    {% for item in subjects_with_absences %}
+                    <div class="card mb-4 note-card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.subject.name }}</h5>
+                            {% if type == '0' %}
+                            <p class="card-text">Ma Note: {{ item.absence_count }}</p>
+                            {% else %}
+                            <p class="card-text">Moyenne: {{ item.absence_count }}</p>
+                            {% endif %}
+                            <a href="/note/{{ item.subject.id }}" class="badge badge-warning">Voir le détails</a>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">DDRS</h5>
-                        <p class="card-text">12/20</p>
-                        <a class="badge badge-warning">savoir plus ↗️</a>
-                    </div>
-                </div>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Anglais</h5>
-                        <p class="card-text">16/20</p>
-                        <a class="badge badge-secondary">savoir plus ↗️</a>
-                    </div>
+                <div id="notes-pagination-controls" class="text-center mt-3">
+                    <button id="notes-prev-btn" class="btn btn-info" onclick="prevNotesPage()">
+                        <i class="fa fa-chevron-left"></i>
+                    </button>
+                    <button id="notes-next-btn" class="btn btn-info" onclick="nextNotesPage()">
+                        <i class="fa fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -66,29 +66,45 @@ Newdle - Page principale
         <div class="col-md-4">
             <div class="category mb-5">
                 <h2 class="category-title">Absences</h2>
+                {% if type == '0' %}
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h5 class="card-title">Business Intelligence</h5>
-                        <p class="card-text">Séance 04/06/2024</p>
-                        <a class="badge badge-warning">savoir plus ↗️</a>
+                        <h5 class="card-title">Mes statistiques</h5>
+                        <p class="card-text">Nombre d'absence : {{ n_abs }}</p>
+                        <p class="card-text">Nombre de retard : {{ n_late }}</p>
                     </div>
                 </div>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Config Base</h5>
-                        <p class="card-text">Séance 29/05/2024</p>
-                        <a class="badge badge-warning">savoir plus ↗️</a>
+                {% endif %}
+                <div id="absences-container">
+                    {% for item in subjects_with_absences %}
+                    <div class="card mb-4 absence-card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.subject.name }}</h5>
+                            <p class="card-text">Nombre d'absences: {{ item.absence_count }}</p>
+                            <a href="/absence/{{ item.subject.name }}?details" class="badge badge-warning">Voir le détails</a>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Anglais</h5>
-                        <p class="card-text">Séance 09/03/2024</p>
-                        <a class="badge badge-secondary">savoir plus ↗️</a>
-                    </div>
-                </div>
+            <div id="pagination-controls" class="text-center mt-3">
+                <button id="prev-btn" class="btn btn-info" onclick="prevPage()">
+                    <i class="fa fa-chevron-left"></i>
+                </button>
+                <button id="next-btn" class="btn btn-info" onclick="nextPage()">
+                    <i class="fa fa-chevron-right"></i>
+                </button>
             </div>
         </div>
     </div>
+    </div>
 </div>
 {% endblock %}
+{% block scripts %}
+<script src="{% static 'js/change_page.js' %}"></script>
+<script>
+    const userType = {{ type }};
+    inititemPerPage(userType);
+</script>
+{% endblock %}
+
+

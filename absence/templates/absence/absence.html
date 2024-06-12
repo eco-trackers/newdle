@@ -82,7 +82,7 @@
                             {% endif %}
                             {% endfor %}
                         </div>
-                        <button type="submit" class="btn btn-primary">Envoyer</button>
+                        <button type="submit" class="btn btn-success">Confirmer l'appel</button>
                     </form>
                     </div>
                     </div>
@@ -92,7 +92,7 @@
                         {% if level >= 1 %}
                         <h2>Absences pour {{ subject_id }}</h2>
                         {% else %}
-                        <h2>Vos absences</h2>
+                        <h2>Vos absences en {{ subject_id }}</h2>
                         {% endif %}
                         <table class="card-body">
                         <thead>
@@ -127,8 +127,10 @@
                         </table>
                         <span>
                             {% if absences.has_previous %}
+                            <div>
                                 <a href="?details&page=1" class="btn btn-dark">&laquo; première</a>
                                 <a href="?details&page={{ absences.previous_page_number }}" class="btn btn-dark">précédente</a>
+                            </div>
                             {% endif %}
   
                         <span>
@@ -136,19 +138,14 @@
                         </span>
   
                         {% if absences.has_next %}
+                        <div>
                             <a href="?details&page={{ absences.next_page_number }}" class="btn btn-dark" >suivante</a>
                             <a href="?details&page={{ absences.paginator.num_pages }}" class="btn btn-dark">dernière &raquo;</a>
+                        </div>
                         {% endif %}
                         </span>
                     </div>
                     </div>
-                {% elif mode == 'attendance' %}
-                    <h2>Faire l'Appel</h2>
-                    <form method="post"  class="form-check form-check-inline">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary">Enregistrer l'Appel</button>
-                    </form>
                 {% endif %}
             </div>
     <div class="col-md-4">

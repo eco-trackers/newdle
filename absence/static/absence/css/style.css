@@ -71,12 +71,25 @@
   background-color: var(--primary-color-hover);
   }
 
-.btn-danger {
+.btn-danger2 {
+    color: #fff;
+    background-color: #bd2130;
+    border-color: #b21f2d;
     border: none;
     border-radius: 5px;
     width: 100%;
     padding: 10px;
     font-size: 16px;
+    }
+.btn-danger2:hover {
+  color: #fff;
+  background-color: #c82333;
+  border-color: #bd2130;
+  }
+.btn-danger2:not(:disabled):not(.disabled):active{
+  color: #fff;
+  background-color: #bd2130;
+  border-color: #b21f2d;
     }
 .btn-success {
   border: none;

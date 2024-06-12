@@ -1,36 +1,43 @@
-<!DOCTYPE html>
-{% load static %}
-<html>
+{% extends 'base.html' %}
 
-<head>
-    <title>Ue Home</title>
-    <h2>Connected as: {{ request.user.email }} <br> user level: {{ request.user.profil.type }}</h2>
-</head>
+{% block title %}
+Liste des UE
+{% endblock %}
 
-<body>
-    <h1>Ue list</h1>
-    <ul>
-        {% for ue in ue_list %}
-        <li>
-            <div>name: {{ ue.name }}</div>
+{% block content %}
+<main class="container mt-5">
+    <h2 class="text-center text-white">Liste des UEs</h2>
+    <div id="ueContainer">
+        {% if request.user.profil.type != '0' %}
+        <a href="{% url 'subjects:ue-new-view' %}" class="btn btn-primary mb-2">Nouvelle UE</a>
+        {% endif %}
+        <div class="ue-section mb-5">
+            <div class="row">
+                {% for ue in ue_list %}
+                <div class="col-md-4 mb-4">
+                    <div class="card card-subject text-black">
+                        <div class="card-body">
+                            
+                                <h5 class="card-title">
+                                    <a href="{% url 'subjects:ue-get-detail-view' ue_id=ue.id %}"><p>{{ ue.name }}</p></a>
+                                    <p>coef: {{ ue.coef }}</p>
+                                    <p>semester: {{ ue.semester }}</p>
+                                </h5>
+                                
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
 
-            <div>semester: {{ ue.semester }}</div>
 
-            <div>coeff: {{ ue.coef }}</div>
-            
-            {% if request.user.profil.type == '1' or request.user.profil.type == '2' %}
-            <a href="{% url 'ue-get-detail-view' ue_id=ue.id %}">Manage</a>
-            {% endif %}
-            
-            
-        </li>
-        {% endfor %}
-    </ul>
+    </div>
+</main>
+{% endblock %}
 
-    {% if request.user.profil.type == '1' or request.user.profil.type == '2' %}
-    <a href="{% url 'ue-new-view' %}">Create ue</a>
-    {% endif %}
-
-</body>
-
-</html>
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}

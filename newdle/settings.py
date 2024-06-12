@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-d--s5lyd(87r)d7m@i@up0+$g0o7x&4rhzwwm3(c$+q=b5%ckg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True 
 
 ALLOWED_HOSTS = []
 
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.middleware.gzip.GZipMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -54,6 +55,17 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+GZIP_MIDDLEWARE_MIMETYPES = [
+    'text/html',
+    'text/plain',
+    'text/xml',
+    'application/json',
+    'application/javascript',
+    'text/css',
+]
+
+GZIP_MIN_LENGTH = 50
 
 ROOT_URLCONF = 'newdle.urls'
 
@@ -142,3 +154,5 @@ PASSWORD_RESET_TIMEOUT = 259200
 
 LOGIN_URL = '/login/'
 LOGOUT_REDIRECT_URL = '/login/'
+
+handler404 = 'newdle.views.page_404' #s'affiche en mode debug=false
