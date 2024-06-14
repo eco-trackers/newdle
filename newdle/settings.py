@@ -23,12 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-d--s5lyd(87r)d7m@i@up0+$g0o7x&4rhzwwm3(c$+q=b5%ckg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True 
+DEBUG = True
 
 ALLOWED_HOSTS = [
-    '10.39.253.184',
+    '10.39.253.184', #10.39.250.1
     'localhost',
-    '127.0.0.1'
+    '127.0.0.1',
+    '*'
 ]
 
 
@@ -147,9 +148,9 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+#EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEFAULT_FROM_EMAIL = 'App <nexus@nexus.ensisa>'
-#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp-relay.brevo.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'yahiael1001@gmail.com'

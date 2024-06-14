@@ -45,7 +45,8 @@ def principal(request):
             for item in notes:
                 n += item['note']
                 i += 1
-            note = n/i
+            if i != 0:
+                note = n/i
                     
         if subject_absences:
             absences_data.append({
